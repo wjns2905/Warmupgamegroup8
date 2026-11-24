@@ -7,64 +7,68 @@ export default {
   theme: {
     extend: {
       colors: {
-        midnight: {
-          DEFAULT: '#171B35',
-          light: '#23294E',
-          dark: '#0F1224'
+        navy: {
+          DEFAULT: '#151C45',
+          dark: '#0D122D',
+          light: '#242C5F'
         },
-        violet: {
-          DEFAULT: '#7855D9',
-          light: '#9171ED',
-          dark: '#5838B5',
-          deep: '#382568'
+        purple: {
+          DEFAULT: '#7965F2',
+          light: '#9382F8',
+          dark: '#5D49D6'
+        },
+        orange: {
+          DEFAULT: '#FF8426',
+          light: '#FFA053',
+          dark: '#E06A12'
         },
         mint: {
-          DEFAULT: '#58CDB5',
-          light: '#7FE3CE',
-          dark: '#3CA792'
-        },
-        amber: {
-          DEFAULT: '#FFCA64',
-          light: '#FFE098',
-          dark: '#E5AB3A'
+          DEFAULT: '#55C7AA',
+          light: '#72D6BC',
+          dark: '#3CAE90'
         },
         cream: {
-          DEFAULT: '#F6F3EA',
+          DEFAULT: '#FFF4DF',
           light: '#FFFFFF',
-          dark: '#E7E2D2'
+          dark: '#F3E5C8'
         },
-        success: '#42D392',
-        coral: '#F46D75',
+        yellow: {
+          DEFAULT: '#FFD343',
+          light: '#FFE073',
+          dark: '#E5BC28'
+        },
+        coral: {
+          DEFAULT: '#F47E93',
+          light: '#F89DAE',
+          dark: '#D85F75'
+        }
       },
       fontFamily: {
-        heading: ['Space Grotesk', 'Sora', 'system-ui', 'sans-serif'],
-        sans: ['Be Vietnam Pro', 'Inter', 'system-ui', 'sans-serif'],
-        digital: ['Chakra Petch', 'Share Tech Mono', 'monospace'],
+        heading: ['"Baloo 2"', '"Be Vietnam Pro"', 'sans-serif'],
+        sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'],
+        comic: ['Bungee', '"Baloo 2"', 'cursive', 'sans-serif'],
+      },
+      boxShadow: {
+        'comic': '4px 4px 0px #151C45',
+        'comic-sm': '2px 2px 0px #151C45',
+        'comic-lg': '6px 6px 0px #151C45',
+        'comic-xl': '8px 8px 0px #151C45',
+      },
+      borderWidth: {
+        '3': '3px',
       },
       animation: {
-        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'bounce-gentle': 'bounce 2s infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
-        'glitch': 'glitch 0.4s ease-in-out infinite alternate',
       },
       keyframes: {
-        'pulse-glow': {
-          '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 15px rgba(120, 85, 217, 0.8))' },
-          '50%': { opacity: '.7', filter: 'drop-shadow(0 0 5px rgba(120, 85, 217, 0.3))' },
-        },
-        'float': {
+        float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        'glitch': {
-          '0%': { transform: 'translate(0)' },
-          '20%': { transform: 'translate(-2px, 2px)' },
-          '40%': { transform: 'translate(-2px, -2px)' },
-          '60%': { transform: 'translate(2px, 2px)' },
-          '80%': { transform: 'translate(2px, -2px)' },
-          '100%': { transform: 'translate(0)' },
+          '50%': { transform: 'translateY(-6px)' },
         }
       }
     },
   },
   plugins: [],
-}
+};
