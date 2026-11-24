@@ -31,9 +31,9 @@ export const VNDialogueBox: React.FC<VNDialogueBoxProps> = ({
 
   const getAvatarSrc = () => {
     switch (speaker) {
-      case 'minh': return '/assets/characters/minh_avatar.png';
-      case 'linh': return '/assets/characters/linh_avatar.png';
-      case 'tick': return '/assets/characters/tick_avatar.png';
+      case 'minh': return './assets/characters/minh_avatar.png';
+      case 'linh': return './assets/characters/linh_avatar.png';
+      case 'tick': return './assets/characters/tick_avatar.png';
       default: return null;
     }
   };
