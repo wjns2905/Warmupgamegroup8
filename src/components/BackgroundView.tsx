@@ -25,24 +25,16 @@ export const BackgroundView: React.FC<BackgroundViewProps> = ({ bg, children }) 
       )}
 
       {bg === 'bedroom' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#14172e] via-[#1a1f3d] to-[#0d0f1f]">
-          {/* Cozy Evening Student Room with Laptop Glow */}
-          <div className="absolute top-12 left-16 w-72 h-80 rounded-xl border border-violet/30 bg-[#1e254d]/40 backdrop-blur-sm p-4">
-            <div className="text-xs font-digital text-amber/80 flex justify-between items-center border-b border-violet/20 pb-2">
-              <span>📅 EXAM COUNTDOWN</span>
-              <span className="text-coral animate-pulse">6 DAYS LEFT</span>
-            </div>
-            <div className="mt-4 grid grid-cols-7 gap-1 text-[10px] text-cream/60 text-center font-mono">
-              <div className="text-amber">T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div className="text-coral font-bold">T7</div><div className="text-coral font-bold">CN</div>
-              <div className="p-1">1</div><div className="p-1">2</div><div className="p-1">3</div><div className="p-1">4</div><div className="p-1">5</div>
-              <div className="p-1 bg-violet/40 rounded text-cream font-bold">6</div>
-              <div className="p-1 bg-coral/30 rounded text-coral font-bold ring-1 ring-coral">EXAM</div>
-            </div>
-            <div className="mt-6 p-2 rounded bg-midnight-dark/80 border border-violet/30 text-[11px] text-cream/70">
-              <span className="text-amber font-semibold">Tình trạng:</span> 9 chương chưa ôn tập
-            </div>
-          </div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-64 bg-violet/15 blur-3xl rounded-full" />
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Authentic Bedroom Illustration uploaded by user */}
+          <img 
+            src="./assets/backgrounds/bg_bedroom.jpg" 
+            alt="Alex Bedroom" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+          />
+          {/* Atmospheric ambient lighting & subtle vignette */}
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-amber/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
         </div>
       )}
 

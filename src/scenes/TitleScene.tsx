@@ -23,9 +23,17 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between p-8 sm:p-12 z-20">
-      <div className="absolute inset-0 bg-gradient-to-tr from-midnight-dark via-[#191e45] to-[#251b54] overflow-hidden -z-10">
+      <div className="absolute inset-0 overflow-hidden -z-10">
+        <img 
+          src="./assets/backgrounds/bg_bedroom.jpg" 
+          alt="Alex Bedroom" 
+          className="w-full h-full object-cover object-center filter contrast-105 brightness-60 blur-[1px]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-midnight-dark/95 via-midnight-dark/85 to-[#251b54]/80" />
         <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-violet/25 rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-32 -right-32 w-[600px] h-[600px] bg-mint/20 rounded-full blur-3xl animate-pulse [animation-delay:2s]" />
+        
+        {/* Subtle decorative grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#7855D910_1px,transparent_1px),linear-gradient(to_bottom,#7855D910_1px,transparent_1px)] bg-[size:3rem_3rem]" />
       </div>
 
