@@ -7,15 +7,13 @@ export type TickExpression = 'neutral' | 'countdown' | 'warning' | 'cheering' | 
 export type CharacterExpression = MinhExpression | LinhExpression | TickExpression | string;
 
 export type GameScene = 
-  | 'TITLE'
-  | 'PROLOGUE'
-  | 'MEET_LINH'
+  | 'WARMUP_INTRO'
   | 'SWOT_QUIZ'
   | 'SWOT_COMPLETE'
   | 'SMART_VIDEO'
   | 'SMART_DISCUSSION'
-  | 'SMART_KEYS'
-  | 'SMART_PLAN'
+  | 'SMART_THEORY'
+  | 'SMART_GAME'
   | 'VICTORY';
 
 export interface DialogueLine {
@@ -30,7 +28,7 @@ export interface DialogueLine {
 
 export interface QuizQuestion {
   id: number;
-  category: 'S' | 'W' | 'O' | 'T' | 'ALL';
+  category: 'S' | 'W' | 'O' | 'T' | 'ALL' | 'M' | 'A' | 'R' | string;
   title: string;
   question: string;
   options: {

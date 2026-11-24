@@ -229,8 +229,128 @@ export const SWOT_QUESTIONS: QuizQuestion[] = [
     correctKey: 'A',
     explanation: 'Giỏi ngoại ngữ là Điểm mạnh (Strengths) về năng lực cá nhân; thiếu tự tin khi thuyết trình là Điểm yếu (Weaknesses) cần rèn luyện.',
     rewardXP: 100
+  },
+  {
+    id: 9,
+    category: 'T',
+    title: 'Câu 9: Chiến lược W-T (Phòng thủ)',
+    question: 'Chiến lược W-T trong ma trận SWOT thường hướng tới mục tiêu nào sau đây?',
+    options: [
+      { key: 'A', text: 'Tối đa hóa lợi nhuận bằng cách mở rộng ồ ạt quy mô' },
+      { key: 'B', text: 'Khắc phục điểm yếu và giảm thiểu tối đa các nguy cơ, thách thức từ môi trường bên ngoài' },
+      { key: 'C', text: 'Sử dụng điểm mạnh nội tại để thâu tóm đối thủ cạnh tranh' },
+      { key: 'D', text: 'Vay vốn đầu tư mạo hiểm vào các lĩnh vực rủi ro cao' }
+    ],
+    correctKey: 'B',
+    explanation: 'Chiến lược W-T (Weaknesses - Threats) là chiến lược phòng thủ, tập trung khắc phục những hạn chế nội tại và giảm thiểu tối đa rủi ro từ các thách thức bên ngoài.',
+    rewardXP: 100
+  },
+  {
+    id: 10,
+    category: 'ALL',
+    title: 'Câu 10: Ứng dụng SWOT trong Quản trị',
+    question: 'Trong quá trình quản trị chiến lược, phân tích SWOT phát huy hiệu quả cao nhất ở giai đoạn nào?',
+    options: [
+      { key: 'A', text: 'Hoạch định chiến lược (Phân tích bối cảnh và định hướng phát triển)' },
+      { key: 'B', text: 'Đánh giá và sa thải nhân sự cuối năm' },
+      { key: 'C', text: 'Chỉ áp dụng khi doanh nghiệp đứng trước bờ vực phá sản' },
+      { key: 'D', text: 'Thanh lý tài sản và máy móc cũ' }
+    ],
+    correctKey: 'A',
+    explanation: 'Phân tích SWOT là công cụ cốt lõi trong giai đoạn Hoạch định chiến lược (Strategic Planning), giúp tổ chức định vị bản thân và lựa chọn hướng đi tối ưu.',
+    rewardXP: 100
   }
 ];
+
+export const SMART_GAME_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 101,
+    category: 'S',
+    title: 'Thử Thách SMART 1: Nhận diện Tiêu chí S',
+    question: 'Trong tình huống video, việc "Ôn tập trọn vẹn 9 chương, học cuốn chiếu từng trang kết hợp tắt điện thoại khi vào ca học" đáp ứng tiêu chí nào của phương pháp SMART?',
+    options: [
+      { key: 'A', text: 'S – Specific (Cụ thể)' },
+      { key: 'B', text: 'M – Measurable (Đo lường được)' },
+      { key: 'C', text: 'A – Achievable (Khả thi)' },
+      { key: 'D', text: 'T – Time-bound (Có thời hạn)' }
+    ],
+    correctKey: 'A',
+    explanation: 'Tiêu chí S (Specific) đòi hỏi hành động rõ ràng: xác định đúng bài toán 9 chương, học từng trang/từng chương và cách ly yếu tố gây xao nhãng (điện thoại).',
+    rewardXP: 100
+  },
+  {
+    id: 102,
+    category: 'M',
+    title: 'Thử Thách SMART 2: Nhận diện Tiêu chí M',
+    question: 'Chi tiết "Gắn tiến độ với bảng checklist 9 chương (0/9 → 9/9) và duy trì tốc độ học tối thiểu 2 chương/ngày" đáp ứng tiêu chí nào?',
+    options: [
+      { key: 'A', text: 'S – Specific (Cụ thể)' },
+      { key: 'B', text: 'M – Measurable (Đo lường được)' },
+      { key: 'C', text: 'R – Relevant (Thực tế / Phù hợp)' },
+      { key: 'D', text: 'A – Achievable (Khả thi)' }
+    ],
+    correctKey: 'B',
+    explanation: 'Tiêu chí M (Measurable) giúp đo lường định lượng tiến độ thực tế bằng con số cụ thể (0/9 đến 9/9 chương) thay vì cảm tính.',
+    rewardXP: 100
+  },
+  {
+    id: 103,
+    category: 'A',
+    title: 'Thử Thách SMART 3: Nhận diện Tiêu chí A',
+    question: 'Thay vì dồn hết 9 chương vào 1–2 ngày cuối gây áp lực kiệt sức, việc "Chia đều 9 chương trong 5 ngày (~1,8–2 chương/ngày) và bắt đầu từ trang sách đầu tiên" đáp ứng tiêu chí nào?',
+    options: [
+      { key: 'A', text: 'M – Measurable (Đo lường được)' },
+      { key: 'B', text: 'R – Relevant (Thực tế / Phù hợp)' },
+      { key: 'C', text: 'A – Achievable (Khả thi)' },
+      { key: 'D', text: 'T – Time-bound (Có thời hạn)' }
+    ],
+    correctKey: 'C',
+    explanation: 'Tiêu chí A (Achievable) chia nhỏ khối lượng vừa sức, hạ rào cản tâm lý "bắt đầu từ đâu" để người học hành động ngay.',
+    rewardXP: 100
+  },
+  {
+    id: 104,
+    category: 'ALL',
+    title: 'Thử Thách SMART 4: Nhận diện Tiêu chí R',
+    question: 'Mục tiêu giúp nhân vật giải quyết trực tiếp thói quen lướt điện thoại "thêm 5 phút" và áp lực sát ngày thi để qua môn an toàn đáp ứng tiêu chí nào?',
+    options: [
+      { key: 'A', text: 'R – Relevant (Thực tế / Phù hợp)' },
+      { key: 'B', text: 'S – Specific (Cụ thể)' },
+      { key: 'C', text: 'A – Achievable (Khả thi)' },
+      { key: 'D', text: 'M – Measurable (Đo lường được)' }
+    ],
+    correctKey: 'A',
+    explanation: 'Tiêu chí R (Relevant) đảm bảo mục tiêu giải quyết trúng gốc rễ vấn đề thực tế của nhân vật trong video.',
+    rewardXP: 100
+  },
+  {
+    id: 105,
+    category: 'ALL',
+    title: 'Thử Thách SMART 5: Nhận diện Tiêu chí T',
+    question: 'Quy định "Thực hiện liên tục trong 5 ngày và hoàn thành toàn bộ trước 22:00 của đêm trước ngày thi" đáp ứng tiêu chí nào?',
+    options: [
+      { key: 'A', text: 'S – Specific (Cụ thể)' },
+      { key: 'B', text: 'A – Achievable (Khả thi)' },
+      { key: 'C', text: 'M – Measurable (Đo lường được)' },
+      { key: 'D', text: 'T – Time-bound (Có thời hạn)' }
+    ],
+    correctKey: 'D',
+    explanation: 'Tiêu chí T (Time-bound) khóa chặt khung thời gian 5 ngày và mốc hạn chót 22:00 giúp đảm bảo giấc ngủ trước ngày thi.',
+    rewardXP: 100
+  }
+];
+
+export const VIDEO_DATA = {
+  url: 'https://www.youtube.com/watch?app=desktop&v=uHRSBmStC5g',
+  embedUrl: 'https://www.youtube-nocookie.com/embed/uHRSBmStC5g',
+  title: 'Video Tình Huống: Trì Hoãn Trong Học Tập & Thiếu Kế Hoạch',
+  afterVideoReflection: [
+    'Chắc hẳn không ít người trong chúng ta đã từng rơi vào tình huống tương tự như nhân vật trong video: biết mình cần phải làm gì, thậm chí đã có ý định bắt tay vào thực hiện, nhưng rồi lại trì hoãn hết lần này đến lần khác.',
+    'Vậy nếu chúng ta là nhân vật trong video, làm thế nào để thoát khỏi vòng lặp này và thực sự hoàn thành công việc?'
+  ],
+  discussionPrompt: 'Trong 2 phút, hãy giúp nhân vật xây dựng một kế hoạch để THỰC SỰ HOÀN THÀNH CÔNG VIỆC thay vì tiếp tục trì hoãn. Hãy nghĩ về một mục tiêu và cách thực hiện sao cho nhân vật có thể bắt tay vào làm ngay.',
+  afterDiscussionRemark: 'Vừa rồi, chúng ta nhận được khá nhiều giải pháp thú vị, từ việc loại bỏ yếu tố gây xao nhãng, chia nhỏ công việc cho đến đặt deadline... Tuy nhiên, để biến những mong muốn thành hiện thực, chúng ta cần phương pháp SMART!'
+};
 
 export const SMART_PILLARS: SmartPillar[] = [
   {

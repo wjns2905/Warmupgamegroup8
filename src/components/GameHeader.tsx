@@ -25,17 +25,15 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
 }) => {
   const getSceneLabel = () => {
     switch (currentScene) {
-      case 'TITLE': return 'TRANG CHỦ';
-      case 'PROLOGUE': return 'KHỞI ĐẦU: 5 PHÚT NỮA...';
-      case 'MEET_LINH': return 'CHƯƠNG 01: GẶP GỠ LINH & TICK';
-      case 'SWOT_QUIZ': return 'CHƯƠNG 01: 8 CÂU HỎI SWOT';
-      case 'SWOT_COMPLETE': return 'CHƯƠNG 01: HOÀN THÀNH SWOT';
-      case 'SMART_VIDEO': return 'CHƯƠNG 02: TÌNH HUỐNG TRÌ HOÃN';
-      case 'SMART_DISCUSSION': return 'CHƯƠNG 02: THẢO LUẬN 2 PHÚT';
-      case 'SMART_KEYS': return 'CHƯƠNG 02: 5 TRỤ CỘT SMART';
-      case 'SMART_PLAN': return 'CHƯƠNG 02: LẬP KẾ HOẠCH 5 NGÀY';
-      case 'VICTORY': return 'CHIẾN THẮNG: LEVEL UP!';
-      default: return 'LEVEL UP!';
+      case 'WARMUP_INTRO': return 'WARM UP GAME: KHỞI ĐỘNG';
+      case 'SWOT_QUIZ': return 'PHẦN 1: 10 CÂU THỬ THÁCH SWOT';
+      case 'SWOT_COMPLETE': return 'TỔNG KẾT PHẦN SWOT';
+      case 'SMART_VIDEO': return 'PHẦN 2: VIDEO TÌNH HUỐNG';
+      case 'SMART_DISCUSSION': return 'PHẦN 3: THẢO LUẬN 2 PHÚT';
+      case 'SMART_THEORY': return 'PHẦN 4: NGUYÊN TẮC SMART';
+      case 'SMART_GAME': return 'PHẦN 5: TRÒ CHƠI SMART';
+      case 'VICTORY': return 'CHIẾN THẮNG: WARM UP GAME!';
+      default: return 'WARM UP GAME';
     }
   };
 
