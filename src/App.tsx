@@ -78,28 +78,131 @@ export const App: React.FC = () => {
     });
   };
 
-  // Keyboard shortcut listener
+  // Keyboard shortcut listener for remote presenter clickers & keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
+      // Presenter modal toggle (P)
       if (e.key === 'p' || e.key === 'P') {
         setIsPresenterOpen(prev => !prev);
-      } else if (['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'].includes(e.key)) {
+        return;
+      }
+
+      // Fullscreen toggle (F)
+      if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+        return;
+      }
+
+      // Close presenter modal on Escape
+      if (e.key === 'Escape' && isPresenterOpen) {
+        setIsPresenterOpen(false);
+        return;
+      }
+
+      // Answer keys for quiz (A, B, C, D)
+      if (['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'].includes(e.key)) {
         const key = e.key.toUpperCase();
         if (currentScene === 'SWOT_QUIZ' && !isSwotSubmitted) {
           handleSelectSwotAnswer(key);
         } else if (currentScene === 'SMART_GAME' && !isSmartSubmitted) {
           handleSelectSmartAnswer(key);
         }
-      } else if (e.key === ' ' || e.key === 'Enter') {
+        return;
+      }
+
+      // Advance key (Space or Enter)
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
         if (currentScene === 'WARMUP_INTRO') {
           setCurrentScene('SWOT_QUIZ');
-        } else if (currentScene === 'SWOT_QUIZ' && isSwotSubmitted) {
-          handleNextSwotQuestion();
-        } else if (currentScene === 'SMART_GAME' && isSmartSubmitted) {
-          handleNextSmartQuestion();
+        } else if (currentScene === 'SWOT_QUIZ') {
+          if (isSwotSubmitted) {
+            handleNextSwotQuestion();
+          }
+        } else if (currentScene === 'SWOT_COMPLETE') {
+          setCurrentScene('SMART_VIDEO');
+        } else if (currentScene === 'SMART_VIDEO') {
+          setCurrentScene('SMART_DISCUSSION');
+        } else if (currentScene === 'SMART_DISCUSSION') {
+          setCurrentScene('SMART_INTRO');
+        } else if (currentScene === 'SMART_INTRO') {
+          setCurrentScene('SMART_THEORY');
+        } else if (currentScene === 'SMART_THEORY') {
+          setCurrentScene('VICTORY');
+        } else if (currentScene === 'SMART_GAME') {
+          if (isSmartSubmitted) {
+            handleNextSmartQuestion();
+          }
+        } else if (currentScene === 'VICTORY') {
+          setCurrentScene('WARMUP_INTRO');
+          setXp(0);
+          setCurrentSwotIdx(0);
+          setCurrentSmartIdx(0);
+          setCheckedChapters([]);
         }
+        return;
+      }
+
+      // Slide next: ArrowRight or PageDown
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (currentScene === 'WARMUP_INTRO') {
+          setCurrentScene('SWOT_QUIZ');
+        } else if (currentScene === 'SWOT_QUIZ') {
+          if (isSwotSubmitted) {
+            handleNextSwotQuestion();
+          } else {
+            // Reveal answer or skip to next question for teacher convenience
+            if (currentSwotIdx < SWOT_QUESTIONS.length - 1) {
+              setCurrentSwotIdx(prev => prev + 1);
+              setSelectedSwotAnswer(null);
+              setIsSwotSubmitted(false);
+            } else {
+              setCurrentScene('SWOT_COMPLETE');
+            }
+          }
+        } else if (currentScene === 'SWOT_COMPLETE') {
+          setCurrentScene('SMART_VIDEO');
+        } else if (currentScene === 'SMART_VIDEO') {
+          setCurrentScene('SMART_DISCUSSION');
+        } else if (currentScene === 'SMART_DISCUSSION') {
+          setCurrentScene('SMART_INTRO');
+        } else if (currentScene === 'SMART_INTRO') {
+          setCurrentScene('SMART_THEORY');
+        } else if (currentScene === 'SMART_THEORY') {
+          setCurrentScene('VICTORY');
+        }
+        return;
+      }
+
+      // Slide previous: ArrowLeft or PageUp
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        if (currentScene === 'VICTORY') {
+          setCurrentScene('SMART_THEORY');
+        } else if (currentScene === 'SMART_THEORY') {
+          setCurrentScene('SMART_INTRO');
+        } else if (currentScene === 'SMART_INTRO') {
+          setCurrentScene('SMART_DISCUSSION');
+        } else if (currentScene === 'SMART_DISCUSSION') {
+          setCurrentScene('SMART_VIDEO');
+        } else if (currentScene === 'SMART_VIDEO') {
+          setCurrentScene('SWOT_COMPLETE');
+        } else if (currentScene === 'SWOT_COMPLETE') {
+          setCurrentScene('SWOT_QUIZ');
+          setCurrentSwotIdx(SWOT_QUESTIONS.length - 1);
+        } else if (currentScene === 'SWOT_QUIZ') {
+          if (currentSwotIdx > 0) {
+            setCurrentSwotIdx(prev => prev - 1);
+            setSelectedSwotAnswer(null);
+            setIsSwotSubmitted(false);
+          } else {
+            setCurrentScene('WARMUP_INTRO');
+          }
+        }
+        return;
       }
     };
 
@@ -186,7 +289,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#151C45] select-none font-sans flex flex-col">
+    <div className="relative w-screen h-screen h-[100dvh] overflow-hidden bg-[#151C45] select-none font-sans flex flex-col">
       
       {/* ================= MAIN FULL SIZE WEB STAGE ================= */}
       <div className="relative w-full h-full overflow-hidden bg-[#151C45] flex flex-col justify-between">
@@ -201,13 +304,14 @@ export const App: React.FC = () => {
           </div>
 
           {/* Center: Stage Indicator */}
-          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-white/95 border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[3px_3px_0px_#151C45]">
+          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[3px_3px_0px_#151C45]">
             {currentScene === 'WARMUP_INTRO' && <span>🚀 KHỞI ĐỘNG</span>}
             {currentScene === 'SWOT_QUIZ' && <span>📝 CÂU HỎI SWOT {currentSwotIdx + 1}/10</span>}
             {currentScene === 'SWOT_COMPLETE' && <span>🎉 HOÀN THÀNH SWOT</span>}
             {currentScene === 'SMART_VIDEO' && <span>🎬 VIDEO TÌNH HUỐNG</span>}
             {currentScene === 'SMART_DISCUSSION' && <span>⏳ THẢO LUẬN 2 PHÚT</span>}
-            {currentScene === 'SMART_THEORY' && <span>💡 NGUYÊN TẮC SMART</span>}
+            {currentScene === 'SMART_INTRO' && <span>💡 NGUYÊN TẮC SMART</span>}
+            {currentScene === 'SMART_THEORY' && <span>🎯 MỤC TIÊU SMART HOÀN CHỈNH</span>}
             {currentScene === 'SMART_GAME' && <span>🎯 THỰC HÀNH SMART {currentSmartIdx + 1}/5</span>}
             {currentScene === 'VICTORY' && <span>🏆 TỔNG KẾT CHIẾN THẮNG</span>}
           </div>
@@ -221,8 +325,8 @@ export const App: React.FC = () => {
 
             <button
               onClick={toggleFullscreen}
-              title={isFullscreen ? "Thu nhỏ cửa sổ (Esc)" : "Toàn màn hình (F11)"}
-              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
+              title={isFullscreen ? "Thu nhỏ cửa sổ (F hoặc Esc)" : "Toàn màn hình (F)"}
+              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] cursor-pointer active:translate-x-0.5 active:translate-y-0.5 transition-all"
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -230,7 +334,7 @@ export const App: React.FC = () => {
             <button
               onClick={() => setIsPresenterOpen(true)}
               title="Cài đặt & Bảng điều khiển thuyết trình (Phím P)"
-              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
+              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] cursor-pointer active:translate-x-0.5 active:translate-y-0.5 transition-all"
             >
               <Settings className="w-4 h-4" />
             </button>
@@ -264,7 +368,7 @@ export const App: React.FC = () => {
 
             {/* Content Card */}
             <div className="relative z-20 my-auto p-4 sm:p-8 text-center max-w-xl mx-auto">
-              <div className="bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
+              <div className="bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF8426] text-white border-2 border-[#151C45] rounded-full font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">
                   <span>✨ HOẠT ĐỘNG KHỞI ĐỘNG LỚP HỌC</span>
                 </div>
@@ -288,7 +392,7 @@ export const App: React.FC = () => {
                   </div>
                   <div className="p-3 bg-[#FFF4DF] border-2 border-[#151C45] rounded-2xl shadow-[2px_2px_0px_#151C45]">
                     <span className="font-heading font-black text-xs text-[#FF8426] block">CHẶNG 2: SMART</span>
-                    <p className="font-sans text-[11px] text-[#151C45]/80 mt-0.5">Xem video tình huống, thảo luận 2 phút & thực hành trò chơi SMART.</p>
+                    <p className="font-sans text-[11px] text-[#151C45]/80 mt-0.5">Xem video tình huống, thảo luận 2 phút & đúc kết mục tiêu SMART.</p>
                   </div>
                 </div>
 
@@ -296,7 +400,7 @@ export const App: React.FC = () => {
                 <div className="pt-2">
                   <button
                     onClick={() => setCurrentScene('SWOT_QUIZ')}
-                    className="w-full sm:w-auto px-8 py-3 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-sm sm:text-base shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 mx-auto"
+                    className="w-full sm:w-auto px-8 py-3 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-sm sm:text-base shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all flex items-center justify-center gap-2 mx-auto"
                   >
                     <span>► BẮT ĐẦU 10 CÂU SWOT</span>
                     <span className="text-xs bg-[#151C45] text-white px-2 py-0.5 rounded-full font-mono">[Space]</span>
@@ -330,7 +434,7 @@ export const App: React.FC = () => {
             {/* Content Container */}
             <div className="relative z-20 w-full h-full flex flex-col justify-between p-4 sm:p-8 overflow-y-auto">
               {/* Top Indicator */}
-              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
+              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
                 <span className="font-heading font-black text-xs sm:text-base text-[#7965F2]">
                   CÂU HỎI {currentSwotIdx + 1} / {SWOT_QUESTIONS.length}: {SWOT_QUESTIONS[currentSwotIdx].title}
                 </span>
@@ -347,7 +451,7 @@ export const App: React.FC = () => {
               </div>
 
               {/* Question Text & Options Card */}
-              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
+              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
                 <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-[#151C45] leading-snug">
                   {SWOT_QUESTIONS[currentSwotIdx].question}
                 </h3>
@@ -358,11 +462,11 @@ export const App: React.FC = () => {
                     const isSelected = selectedSwotAnswer === opt.key;
                     const isCorrect = opt.key === SWOT_QUESTIONS[currentSwotIdx].correctKey;
                     
-                    let btnColor = "bg-white hover:bg-[#FFF4DF] border-[#151C45] text-[#151C45]";
+                    let btnColor = "bg-white hover:bg-[#FFF4DF] border-[#151C45] text-[#151C45] hover:-translate-y-0.5 cursor-pointer";
                     if (isSwotSubmitted) {
-                      if (isCorrect) btnColor = "bg-[#55C7AA] text-[#151C45] font-black";
-                      else if (isSelected) btnColor = "bg-[#F47E93] text-white";
-                      else btnColor = "bg-white/50 text-[#151C45]/40";
+                      if (isCorrect) btnColor = "bg-[#55C7AA] text-[#151C45] font-black border-[#151C45]";
+                      else if (isSelected) btnColor = "bg-[#F47E93] text-white border-[#151C45]";
+                      else btnColor = "bg-white/60 text-[#151C45]/40 border-gray-300 opacity-60";
                     }
 
                     return (
@@ -385,14 +489,14 @@ export const App: React.FC = () => {
 
                 {/* Feedback Alert with full explanation from document */}
                 {isSwotSubmitted && (
-                  <div className={`p-3 sm:p-4 rounded-2xl border-2 sm:border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
+                  <div className={`p-3 sm:p-4 rounded-2xl border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
                     selectedSwotAnswer === SWOT_QUESTIONS[currentSwotIdx].correctKey 
-                      ? 'bg-[#55C7AA]/35 text-[#151C45]' 
-                      : 'bg-[#F47E93]/35 text-[#151C45]'
+                      ? 'bg-[#E8FAF4] text-[#151C45] shadow-[2px_2px_0px_#55C7AA]' 
+                      : 'bg-[#FDECEF] text-[#151C45] shadow-[2px_2px_0px_#F47E93]'
                   }`}>
-                    <div className="font-black mb-1 text-sm sm:text-base">
-                      {selectedSwotAnswer === SWOT_QUESTIONS[currentSwotIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}
-                      <span className="ml-2 font-normal">Đáp án đúng là: <b>{SWOT_QUESTIONS[currentSwotIdx].correctKey}</b></span>
+                    <div className="font-black mb-1 text-sm sm:text-base flex items-center gap-2">
+                      <span>{selectedSwotAnswer === SWOT_QUESTIONS[currentSwotIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}</span>
+                      <span className="font-medium text-xs bg-white px-2 py-0.5 rounded-full border border-[#151C45]">Đáp án: <b>{SWOT_QUESTIONS[currentSwotIdx].correctKey}</b></span>
                     </div>
                     <p className="font-sans text-xs sm:text-sm text-[#151C45]/90 leading-relaxed">{SWOT_QUESTIONS[currentSwotIdx].explanation}</p>
                   </div>
@@ -404,12 +508,12 @@ export const App: React.FC = () => {
                 {isSwotSubmitted ? (
                   <button
                     onClick={handleNextSwotQuestion}
-                    className="px-5 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-5 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                   >
                     <span>{currentSwotIdx < SWOT_QUESTIONS.length - 1 ? 'CÂU TIẾP THEO ►' : 'HOÀN THÀNH 10 CÂU SWOT ►'}</span>
                   </button>
                 ) : (
-                  <span className="text-[11px] font-heading font-bold text-[#151C45] bg-white/80 px-3 py-1 rounded-full border border-[#151C45] self-center">
+                  <span className="text-[11px] font-heading font-bold text-[#151C45] bg-white px-3 py-1 rounded-full border border-[#151C45] shadow-[1px_1px_0px_#151C45] self-center">
                     Bấm phím A, B, C, D hoặc click chọn đáp án
                   </span>
                 )}
@@ -443,8 +547,8 @@ export const App: React.FC = () => {
             />
 
             <div className="relative z-20 my-auto p-4 sm:p-6 text-center max-w-lg mx-auto">
-              <div className="bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-3 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45] animate-pulse">
+              <div className="bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-3 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45]">
                   <Award className="w-10 h-10 text-[#FF8426]" />
                 </div>
 
@@ -462,7 +566,7 @@ export const App: React.FC = () => {
 
                 <button
                   onClick={() => setCurrentScene('SMART_VIDEO')}
-                  className="px-6 py-3 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-sm shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                  className="px-6 py-3 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-sm shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                 >
                   SANG PHẦN 2: VIDEO TÌNH HUỐNG ►
                 </button>
@@ -478,7 +582,7 @@ export const App: React.FC = () => {
 
             <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 overflow-y-auto">
               {/* Header Bar */}
-              <div className="mt-8 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45]">
+              <div className="mt-8 flex items-center justify-between border-2 border-[#151C45] bg-white px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45]">
                 <span className="font-heading font-black text-xs sm:text-sm text-[#FF8426]">
                   PHẦN 2: TRÌNH CHIẾU VIDEO TÌNH HUỐNG TRÌ HOÃN TRONG HỌC TẬP
                 </span>
@@ -510,7 +614,7 @@ export const App: React.FC = () => {
               <div className="flex justify-end pt-1">
                 <button
                   onClick={() => setCurrentScene('SMART_DISCUSSION')}
-                  className="px-6 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                  className="px-6 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                 >
                   BẮT ĐẦU THẢO LUẬN 2 PHÚT ►
                 </button>
@@ -561,7 +665,7 @@ export const App: React.FC = () => {
                   <div className="flex flex-col gap-1.5">
                     <button
                       onClick={() => setIsTimerRunning(prev => !prev)}
-                      className={`px-3.5 py-1.5 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45] transition-all ${
+                      className={`px-3.5 py-1.5 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all ${
                         isTimerRunning ? 'bg-[#FFD343] hover:bg-[#ffe073]' : 'bg-[#55C7AA] hover:bg-[#46b397]'
                       }`}
                     >
@@ -569,7 +673,7 @@ export const App: React.FC = () => {
                     </button>
                     <button
                       onClick={() => { setIsTimerRunning(false); setTimerSeconds(120); }}
-                      className="p-1.5 bg-white hover:bg-gray-100 border-2 border-[#151C45] rounded-lg text-xs shadow-[1px_1px_0px_#151C45]"
+                      className="p-1.5 bg-white hover:bg-gray-100 border-2 border-[#151C45] rounded-lg text-xs shadow-[1px_1px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
                       title="Đặt lại 2 phút"
                     >
                       <RotateCcw className="w-4 h-4 mx-auto text-[#151C45]" />
@@ -579,7 +683,7 @@ export const App: React.FC = () => {
 
                 <button
                   onClick={() => setCurrentScene('SMART_INTRO')}
-                  className="px-6 py-2.5 bg-[#7965F2] hover:bg-[#6853E8] text-white border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                  className="px-6 py-2.5 bg-[#7965F2] hover:bg-[#6853E8] text-white border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                 >
                   SLIDE 3: GIỚI THIỆU SMART ►
                 </button>
@@ -669,14 +773,14 @@ export const App: React.FC = () => {
               <div className="flex justify-between items-center pt-2">
                 <button
                   onClick={() => setCurrentScene('SMART_DISCUSSION')}
-                  className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs shadow-[2px_2px_0px_#151C45]"
+                  className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                 >
                   ◄ Quay lại thảo luận 2 phút
                 </button>
 
                 <button
                   onClick={() => setCurrentScene('SMART_THEORY')}
-                  className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                  className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                 >
                   MỤC TIÊU SMART HOÀN CHỈNH ►
                 </button>
@@ -773,7 +877,7 @@ export const App: React.FC = () => {
                         <span className="font-heading font-black text-xs sm:text-sm text-[#151C45] block">
                           {p.point2Title}
                         </span>
-                        <p className="font-sans text-xs sm:text-[13px] text-[#151C45] leading-relaxed bg-[#FFFDF7] p-2.5 rounded-xl border border-[#151C45]/25">
+                        <p className="font-sans text-xs sm:text-[13px] text-[#151C45] leading-relaxed bg-[#F4F6FB] p-2.5 rounded-xl border border-[#151C45]/25">
                           {p.point2Text}
                         </p>
                       </div>
@@ -787,14 +891,14 @@ export const App: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setCurrentScene('SMART_INTRO')}
-                    className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                   >
                     ◄ Quay lại SMART
                   </button>
 
                   <button
                     onClick={() => setIsPresenterOpen(true)}
-                    className="text-xs sm:text-sm font-heading font-bold text-[#151C45] bg-white/95 border-2 border-[#151C45] px-3.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45] hover:bg-[#FFF4DF] hidden sm:block transition-all"
+                    className="text-xs sm:text-sm font-heading font-bold text-[#151C45] bg-white border-2 border-[#151C45] px-3.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45] hover:bg-[#FFF4DF] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer hidden sm:block transition-all"
                   >
                     💡 Xem phương án phản biện khi khán giả góp ý khác (Phím P)
                   </button>
@@ -802,7 +906,7 @@ export const App: React.FC = () => {
 
                 <button
                   onClick={() => setCurrentScene('VICTORY')}
-                  className="px-6 py-2.5 bg-[#55C7AA] hover:bg-[#46b397] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1.5"
+                  className="px-6 py-2.5 bg-[#55C7AA] hover:bg-[#46b397] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all flex items-center gap-1.5"
                 >
                   <span>HOÀN THÀNH WARM UP GAME</span>
                   <span>🏆</span>
@@ -833,7 +937,7 @@ export const App: React.FC = () => {
 
             <div className="relative z-20 w-full h-full flex flex-col justify-between p-4 sm:p-8 overflow-y-auto">
               {/* Top Indicator */}
-              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
+              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
                 <span className="font-heading font-black text-xs sm:text-base text-[#FF8426]">
                   THỬ THÁCH SMART {currentSmartIdx + 1} / {SMART_GAME_QUESTIONS.length}: {SMART_GAME_QUESTIONS[currentSmartIdx].title}
                 </span>
@@ -848,7 +952,7 @@ export const App: React.FC = () => {
                         key={ch}
                         onClick={() => toggleChapter(ch)}
                         title={`Chương ${ch}`}
-                        className={`w-6 h-6 rounded-lg border-2 border-[#151C45] font-heading font-black text-xs flex items-center justify-center transition-all ${
+                        className={`w-6 h-6 rounded-lg border-2 border-[#151C45] font-heading font-black text-xs flex items-center justify-center transition-all cursor-pointer ${
                           isChecked ? 'bg-[#55C7AA] text-[#151C45] shadow-[1px_1px_0px_#151C45]' : 'bg-white text-gray-400 hover:border-[#FF8426]'
                         }`}
                       >
@@ -860,7 +964,7 @@ export const App: React.FC = () => {
               </div>
 
               {/* Question Text & Options Card */}
-              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
+              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
                 <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-[#151C45] leading-snug">
                   {SMART_GAME_QUESTIONS[currentSmartIdx].question}
                 </h3>
@@ -871,11 +975,11 @@ export const App: React.FC = () => {
                     const isSelected = selectedSmartAnswer === opt.key;
                     const isCorrect = opt.key === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey;
                     
-                    let btnColor = "bg-white hover:bg-[#FFF4DF] border-[#151C45] text-[#151C45]";
+                    let btnColor = "bg-white hover:bg-[#FFF4DF] border-[#151C45] text-[#151C45] hover:-translate-y-0.5 cursor-pointer";
                     if (isSmartSubmitted) {
-                      if (isCorrect) btnColor = "bg-[#55C7AA] text-[#151C45] font-black";
-                      else if (isSelected) btnColor = "bg-[#F47E93] text-white";
-                      else btnColor = "bg-white/50 text-[#151C45]/40";
+                      if (isCorrect) btnColor = "bg-[#55C7AA] text-[#151C45] font-black border-[#151C45]";
+                      else if (isSelected) btnColor = "bg-[#F47E93] text-white border-[#151C45]";
+                      else btnColor = "bg-white/60 text-[#151C45]/40 border-gray-300 opacity-60";
                     }
 
                     return (
@@ -898,14 +1002,14 @@ export const App: React.FC = () => {
 
                 {/* Feedback Alert */}
                 {isSmartSubmitted && (
-                  <div className={`p-3 sm:p-4 rounded-2xl border-2 sm:border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
+                  <div className={`p-3 sm:p-4 rounded-2xl border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
                     selectedSmartAnswer === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey 
-                      ? 'bg-[#55C7AA]/35 text-[#151C45]' 
-                      : 'bg-[#F47E93]/35 text-[#151C45]'
+                      ? 'bg-[#E8FAF4] text-[#151C45] shadow-[2px_2px_0px_#55C7AA]' 
+                      : 'bg-[#FDECEF] text-[#151C45] shadow-[2px_2px_0px_#F47E93]'
                   }`}>
-                    <div className="font-black mb-1 text-sm sm:text-base">
-                      {selectedSmartAnswer === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}
-                      <span className="ml-2 font-normal">Đáp án đúng là: <b>{SMART_GAME_QUESTIONS[currentSmartIdx].correctKey}</b></span>
+                    <div className="font-black mb-1 text-sm sm:text-base flex items-center gap-2">
+                      <span>{selectedSmartAnswer === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}</span>
+                      <span className="font-medium text-xs bg-white px-2 py-0.5 rounded-full border border-[#151C45]">Đáp án: <b>{SMART_GAME_QUESTIONS[currentSmartIdx].correctKey}</b></span>
                     </div>
                     <p className="font-sans text-xs sm:text-sm text-[#151C45]/90 leading-relaxed">{SMART_GAME_QUESTIONS[currentSmartIdx].explanation}</p>
                   </div>
@@ -917,12 +1021,12 @@ export const App: React.FC = () => {
                 {isSmartSubmitted ? (
                   <button
                     onClick={handleNextSmartQuestion}
-                    className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                   >
                     <span>{currentSmartIdx < SMART_GAME_QUESTIONS.length - 1 ? 'THỬ THÁCH TIẾP THEO ►' : 'TỔNG KẾT CHIẾN THẮNG ►'}</span>
                   </button>
                 ) : (
-                  <span className="text-[11px] font-heading font-bold text-[#151C45] bg-white/80 px-3 py-1 rounded-full border border-[#151C45] self-center">
+                  <span className="text-[11px] font-heading font-bold text-[#151C45] bg-white px-3 py-1 rounded-full border border-[#151C45] shadow-[1px_1px_0px_#151C45] self-center">
                     Bấm phím A, B, C, D hoặc click chọn đáp án
                   </span>
                 )}
@@ -961,8 +1065,8 @@ export const App: React.FC = () => {
             />
 
             <div className="relative z-20 my-auto p-4 sm:p-6 text-center max-w-lg mx-auto">
-              <div className="bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-4 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45] animate-pulse">
+              <div className="bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-4 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45]">
                   <Award className="w-10 h-10 text-[#FF8426]" />
                 </div>
 
@@ -999,14 +1103,14 @@ export const App: React.FC = () => {
                       setCurrentSmartIdx(0);
                       setCheckedChapters([]);
                     }}
-                    className="px-5 py-2.5 bg-white hover:bg-[#FFF4DF] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-5 py-2.5 bg-white hover:bg-[#FFF4DF] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                   >
                     🔄 CHƠI LẠI TỪ ĐẦU
                   </button>
 
                   <button
                     onClick={() => setIsPresenterOpen(true)}
-                    className="px-5 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-5 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#151C45] cursor-pointer transition-all"
                   >
                     📋 BẢNG ĐIỀU KHIỂN (PHÍM P)
                   </button>
