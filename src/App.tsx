@@ -798,10 +798,11 @@ export const App: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => setCurrentScene('SMART_GAME')}
-                  className="px-6 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                  onClick={() => setCurrentScene('VICTORY')}
+                  className="px-6 py-2.5 bg-[#55C7AA] hover:bg-[#46b397] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1.5"
                 >
-                  VÀO TRÒ CHƠI THỰC HÀNH SMART ►
+                  <span>HOÀN THÀNH WARM UP GAME</span>
+                  <span>🏆</span>
                 </button>
               </div>
             </div>
@@ -976,13 +977,13 @@ export const App: React.FC = () => {
 
                 <div className="p-3 bg-[#FFF4DF] border-2 border-[#151C45] rounded-2xl flex items-center justify-around shadow-[2px_2px_0px_#151C45]">
                   <div>
-                    <span className="text-[11px] font-heading font-bold text-[#151C45]/70 block">TỔNG ĐIỂM:</span>
+                    <span className="text-[11px] font-heading font-bold text-[#151C45]/70 block">TỔNG ĐIỂM SWOT:</span>
                     <span className="text-xl font-comic font-black text-[#FF8426]">{xp} XP</span>
                   </div>
                   <div className="h-8 w-0.5 bg-[#151C45]/20" />
                   <div>
-                    <span className="text-[11px] font-heading font-bold text-[#151C45]/70 block">TIẾN ĐỘ 9 CHƯƠNG:</span>
-                    <span className="text-xl font-comic font-black text-[#55C7AA]">{checkedChapters.length}/9</span>
+                    <span className="text-[11px] font-heading font-bold text-[#151C45]/70 block">TIẾN ĐỘ WARM UP:</span>
+                    <span className="text-xl font-comic font-black text-[#55C7AA]">10/10 SWOT • 5/5 SMART</span>
                   </div>
                 </div>
 

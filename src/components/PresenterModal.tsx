@@ -126,16 +126,10 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
                     7. Slide: Mục tiêu SMART hoàn chỉnh
                   </button>
                   <button
-                    onClick={() => { onJumpToScene('SMART_GAME'); onClose(); }}
-                    className="p-3 bg-white hover:bg-[#55C7AA] border-2 border-[#151C45] rounded-xl shadow-[2px_2px_0px_#151C45] text-left font-heading font-bold text-xs text-[#151C45] transition-all"
-                  >
-                    8. Phần 5: Trò chơi thực hành SMART & Checklist
-                  </button>
-                  <button
                     onClick={() => { onJumpToScene('VICTORY'); onClose(); }}
-                    className="sm:col-span-2 p-3 bg-[#FFD343] hover:bg-[#FF8426] text-[#151C45] hover:text-white border-2 border-[#151C45] rounded-xl shadow-[2px_2px_0px_#151C45] text-center font-heading font-black text-xs transition-all"
+                    className="p-3 bg-[#FFD343] hover:bg-[#FF8426] text-[#151C45] hover:text-white border-2 border-[#151C45] rounded-xl shadow-[2px_2px_0px_#151C45] text-left font-heading font-black text-xs transition-all"
                   >
-                    🏆 9. Tổng kết & Vinh danh chiến thắng (Victory)
+                    🏆 8. Hoàn thành & Chiến thắng (Victory)
                   </button>
                 </div>
               </div>
