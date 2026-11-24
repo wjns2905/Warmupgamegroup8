@@ -5,6 +5,16 @@
     <link rel="icon" type="image/png" href="./assets/brand/character_sheet.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>LEVEL UP! – SWOT & SMART | Visual Novel Game</title>
+    <script id="gh-pages-redirect">
+      // If hosted on GitHub Pages root without /docs/, redirect instantly to /docs/
+      if (window.location.hostname.includes('github.io')) {
+        var p = window.location.pathname;
+        if (!p.includes('/docs')) {
+          var target = p.replace(/\/$/, '') + '/docs/' + window.location.search + window.location.hash;
+          window.location.replace(target);
+        }
+      }
+    </script>
     <!-- Google Fonts: Baloo 2, Be Vietnam Pro, Bungee -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
