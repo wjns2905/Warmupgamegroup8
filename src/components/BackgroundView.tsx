@@ -39,37 +39,29 @@ export const BackgroundView: React.FC<BackgroundViewProps> = ({ bg, children }) 
       )}
 
       {bg === 'gateway' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1b1238] via-[#2d1b54] to-[#0c091f]">
-          {/* Hyperspace Digital Portal Grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#7855D920_1px,transparent_1px),linear-gradient(to_bottom,#7855D920_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-violet via-mint/40 to-amber/30 blur-2xl opacity-40 animate-pulse-glow" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-dashed border-violet/60 rounded-full animate-spin [animation-duration:20s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-mint/40 rounded-full animate-spin [animation-duration:35s]" />
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Authentic Digital Gateway & Level Up Portal */}
+          <img 
+            src="./assets/backgrounds/bg_gateway.jpg" 
+            alt="Digital Gateway Portal" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/60 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-violet/20 blur-3xl pointer-events-none animate-pulse" />
         </div>
       )}
 
       {bg === 'swot_room' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#171B35] via-[#201c45] to-[#0f1124]">
-          {/* Hologram SWOT Matrix Room */}
-          <div className="absolute inset-0 bg-[radial-gradient(#7855D9_1px,transparent_1px)] [background-size:24px_24px] opacity-20" />
-          <div className="absolute inset-x-20 top-16 bottom-32 grid grid-cols-2 grid-rows-2 gap-6 opacity-25 pointer-events-none">
-            <div className="border border-violet/50 rounded-2xl p-6 bg-violet/5 flex flex-col justify-between">
-              <span className="font-heading font-black text-4xl text-violet">S // STRENGTHS</span>
-              <span className="text-xs tracking-widest text-violet/80 font-mono">INTERNAL ENVIRONMENT</span>
-            </div>
-            <div className="border border-coral/40 rounded-2xl p-6 bg-coral/5 flex flex-col justify-between">
-              <span className="font-heading font-black text-4xl text-coral">W // WEAKNESSES</span>
-              <span className="text-xs tracking-widest text-coral/80 font-mono">INTERNAL ENVIRONMENT</span>
-            </div>
-            <div className="border border-mint/40 rounded-2xl p-6 bg-mint/5 flex flex-col justify-between">
-              <span className="font-heading font-black text-4xl text-mint">O // OPPORTUNITIES</span>
-              <span className="text-xs tracking-widest text-mint/80 font-mono">EXTERNAL ENVIRONMENT</span>
-            </div>
-            <div className="border border-amber/40 rounded-2xl p-6 bg-amber/5 flex flex-col justify-between">
-              <span className="font-heading font-black text-4xl text-amber">T // THREATS</span>
-              <span className="text-xs tracking-widest text-amber/80 font-mono">EXTERNAL ENVIRONMENT</span>
-            </div>
-          </div>
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Authentic SWOT Strategy Room & Futuristic Hologram Portal */}
+          <img 
+            src="./assets/backgrounds/bg_swot_room.jpg" 
+            alt="SWOT Strategy Room" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+          />
+          {/* Atmospheric gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/70 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full bg-violet/15 blur-3xl pointer-events-none animate-pulse-glow" />
         </div>
       )}
 
