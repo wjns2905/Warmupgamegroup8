@@ -117,13 +117,13 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
                     onClick={() => { onJumpToScene('SMART_INTRO'); onClose(); }}
                     className="p-3 bg-white hover:bg-[#7965F2] text-[#151C45] hover:text-white border-2 border-[#151C45] rounded-xl shadow-[2px_2px_0px_#151C45] text-left font-heading font-bold text-xs transition-all"
                   >
-                    6. Slide 3: Giới thiệu SMART (S - M - A - R - T)
+                    6. Slide 3: SMART (S - M - A - R - T)
                   </button>
                   <button
                     onClick={() => { onJumpToScene('SMART_THEORY'); onClose(); }}
                     className="p-3 bg-white hover:bg-[#7965F2] text-[#151C45] hover:text-white border-2 border-[#151C45] rounded-xl shadow-[2px_2px_0px_#151C45] text-left font-heading font-bold text-xs transition-all"
                   >
-                    7. Slide 4: Mục tiêu SMART hoàn chỉnh & 5 Tiêu chí
+                    7. Slide: Mục tiêu SMART hoàn chỉnh
                   </button>
                   <button
                     onClick={() => { onJumpToScene('SMART_GAME'); onClose(); }}

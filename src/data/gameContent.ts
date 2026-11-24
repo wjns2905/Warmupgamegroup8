@@ -416,7 +416,65 @@ export const SMART_PILLARS: SmartPillar[] = [
   }
 ];
 
-export const SMART_GOAL_FULL = "Trong vòng 5 ngày tiếp theo (từ ngày còn 6 ngày đến trước ngày thi 1 ngày), hoàn thành việc đọc hiểu, tóm tắt và làm bài tập ôn tập đủ 9 chương của môn thi bằng cách học tối thiểu 2 chương mỗi ngày (trong các khung tập trung không dùng điện thoại, bắt đầu từ từng trang đầu tiên) và tích hoàn thành trên bảng theo dõi 9 chương trước 22:00 ngày trước kỳ thi.";
+export const SMART_SLIDE_DATA = {
+  slideTitle: 'Thiết lập mục tiêu SMART từ tình huống ôn thi 6 ngày',
+  slideSubtitle: 'Chuyển hóa sự trì hoãn ("thêm 5 phút nữa") thành lộ trình hoàn thành 9 chương trước kỳ thi',
+  goalFull: 'Trong vòng 5 ngày tiếp theo (từ ngày còn 6 ngày đến trước ngày thi 1 ngày), hoàn thành việc đọc hiểu, tóm tắt và ôn tập đủ 9 chương của môn thi bằng cách học tối thiểu 2 chương/ngày trong các khung tập trung không dùng điện thoại (bắt đầu từ từng trang đầu tiên) và tích hoàn thành trên bảng theo dõi trước 22:00 ngày trước kỳ thi.',
+  pillars: [
+    {
+      letter: 'S' as const,
+      nameEn: 'Specific',
+      nameVi: 'Cụ thể',
+      color: '#FF8426',
+      point1Title: 'Hành động rõ ràng:',
+      point1Text: 'Đọc hiểu, tóm tắt, ôn tập trọn vẹn 9 chương.',
+      point2Title: 'Phương pháp:',
+      point2Text: 'Học cuốn chiếu từng trang, từng chương kết hợp cách ly điện thoại khi vào ca học.'
+    },
+    {
+      letter: 'M' as const,
+      nameEn: 'Measurable',
+      nameVi: 'Đo lường được',
+      color: '#55C7AA',
+      point1Title: 'Chỉ số định lượng:',
+      point1Text: 'Tỷ lệ hoàn thành 0/9 → 9/9 chương trên bảng theo dõi trực quan.',
+      point2Title: 'Nhịp độ kiểm soát:',
+      point2Text: 'Đạt tối thiểu 2 chương/ngày và số phiên học tập trung không ngắt quãng.'
+    },
+    {
+      letter: 'A' as const,
+      nameEn: 'Achievable',
+      nameVi: 'Khả thi',
+      color: '#7965F2',
+      point1Title: 'Chia nhỏ áp lực:',
+      point1Text: 'Phân bổ 9 chương trong 5 ngày (~1,8–2 chương/ngày) thay vì dồn hết vào 2 ngày cuối.',
+      point2Title: 'Hạ rào cản khởi đầu:',
+      point2Text: 'Bắt đầu từ trang đầu tiên và tận dụng sự nhắc nhở từ người đồng hành.'
+    },
+    {
+      letter: 'R' as const,
+      nameEn: 'Relevant',
+      nameVi: 'Liên quan / Thực tế',
+      color: '#FFAA2B',
+      point1Title: 'Đánh trúng gốc rễ:',
+      point1Text: 'Khắc phục trực tiếp thói quen lướt điện thoại và tâm lý trì hoãn "just 5 more minutes".',
+      point2Title: 'Đúng trọng tâm:',
+      point2Text: 'Phục vụ trực tiếp mục tiêu vượt qua kỳ thi đúng hạn mà không kiệt sức.'
+    },
+    {
+      letter: 'T' as const,
+      nameEn: 'Time-bound',
+      nameVi: 'Có thời hạn',
+      color: '#F47E93',
+      point1Title: 'Khung thời gian:',
+      point1Text: '5 ngày liên tục bám sát đếm ngược kỳ thi (từ mốc còn 6 ngày đến mốc còn 1 ngày).',
+      point2Title: 'Hạn chót (Deadline):',
+      point2Text: 'Hoàn tất toàn bộ trước 22:00 ngày trước kỳ thi để đảm bảo giấc ngủ.'
+    }
+  ]
+};
+
+export const SMART_GOAL_FULL = SMART_SLIDE_DATA.goalFull;
 
 export const FIVE_DAY_SCHEDULE = [
   { day: 1, title: 'Ngày 1 (Còn 6 ngày)', chapters: 'Chương 1 & Chương 2', note: 'Hạ rào cản, đọc trang đầu tiên, cách ly điện thoại' },
