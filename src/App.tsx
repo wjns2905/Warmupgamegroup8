@@ -259,7 +259,7 @@ export const App: React.FC = () => {
             <img 
               src="./assets/characters/tick_greeting_clean.png" 
               alt="Tick Mascot"
-              className="absolute bottom-6 right-6 sm:right-12 h-[26%] sm:h-[32%] object-contain drop-shadow-[3px_3px_0px_#151C45] z-10 hidden sm:block animate-pulse pointer-events-none" 
+              className="absolute bottom-6 right-6 sm:right-12 h-[26%] sm:h-[32%] object-contain drop-shadow-[3px_3px_0px_#151C45] z-10 hidden sm:block pointer-events-none" 
             />
 
             {/* Content Card */}
@@ -339,7 +339,7 @@ export const App: React.FC = () => {
                     <div
                       key={i}
                       className={`w-4 sm:w-6 h-2.5 rounded-full border border-[#151C45] ${
-                        i < currentSwotIdx ? 'bg-[#55C7AA]' : i === currentSwotIdx ? 'bg-[#FF8426] animate-pulse' : 'bg-gray-200'
+                        i < currentSwotIdx ? 'bg-[#55C7AA]' : i === currentSwotIdx ? 'bg-[#FF8426]' : 'bg-gray-200'
                       }`}
                     />
                   ))}
@@ -535,11 +535,11 @@ export const App: React.FC = () => {
             <img 
               src="./assets/characters/tick_countdown_clean.png" 
               alt="Tick 2 MIN Countdown" 
-              className="absolute bottom-6 right-6 sm:right-14 h-[30%] sm:h-[38%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden md:block animate-pulse pointer-events-none" 
+              className="absolute bottom-6 right-6 sm:right-14 h-[30%] sm:h-[38%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden md:block pointer-events-none" 
             />
 
-            <div className="relative z-20 my-auto p-4 sm:p-6 text-center max-w-lg mx-auto">
-              <div className="bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-5 sm:p-7 shadow-[8px_8px_0px_#151C45] space-y-4">
+            <div className="relative z-20 my-auto p-4 sm:p-6 text-center max-w-xl mx-auto">
+              <div className="bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] space-y-5">
                 <div className="inline-block px-3 py-1 bg-[#FF8426] text-white border-2 border-[#151C45] rounded-full font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">
                   ⏳ CÂU HỎI THẢO LUẬN 2 PHÚT
                 </div>
@@ -548,28 +548,31 @@ export const App: React.FC = () => {
                   "{VIDEO_DATA.discussionPrompt}"
                 </h3>
 
-                {/* Timer Display */}
-                <div className="p-3 sm:p-4 bg-[#FFF4DF] border-3 border-[#151C45] rounded-2xl shadow-[4px_4px_0px_#151C45] flex items-center justify-center gap-4 max-w-xs mx-auto">
-                  <div className="flex items-center gap-2 font-comic text-4xl sm:text-5xl text-[#151C45]">
-                    <Clock className={`w-8 h-8 ${isTimerRunning ? 'text-[#FF8426] animate-spin' : 'text-[#7965F2]'}`} />
+                {/* Timer Display - Clear, solid, no flickering or spinning */}
+                <div className="p-4 sm:p-5 bg-[#FFF4DF] border-3 border-[#151C45] rounded-2xl shadow-[4px_4px_0px_#151C45] flex items-center justify-center gap-5 max-w-sm mx-auto">
+                  <div className="flex items-center gap-3 font-comic text-5xl sm:text-6xl text-[#151C45] tabular-nums tracking-wider select-none">
+                    <Clock className="w-10 h-10 text-[#FF8426] shrink-0" />
                     <span>
                       {Math.floor(timerSeconds / 60).toString().padStart(2, '0')}:
                       {(timerSeconds % 60).toString().padStart(2, '0')}
                     </span>
                   </div>
 
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1.5">
                     <button
                       onClick={() => setIsTimerRunning(prev => !prev)}
-                      className="px-3 py-1 bg-[#55C7AA] hover:bg-[#46b397] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[1px_1px_0px_#151C45]"
+                      className={`px-3.5 py-1.5 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45] transition-all ${
+                        isTimerRunning ? 'bg-[#FFD343] hover:bg-[#ffe073]' : 'bg-[#55C7AA] hover:bg-[#46b397]'
+                      }`}
                     >
                       {isTimerRunning ? 'Dừng' : 'Bắt đầu'}
                     </button>
                     <button
                       onClick={() => { setIsTimerRunning(false); setTimerSeconds(120); }}
-                      className="p-1 bg-white hover:bg-gray-100 border border-[#151C45] rounded-lg text-xs"
+                      className="p-1.5 bg-white hover:bg-gray-100 border-2 border-[#151C45] rounded-lg text-xs shadow-[1px_1px_0px_#151C45]"
+                      title="Đặt lại 2 phút"
                     >
-                      <RotateCcw className="w-3.5 h-3.5 mx-auto" />
+                      <RotateCcw className="w-4 h-4 mx-auto text-[#151C45]" />
                     </button>
                   </div>
                 </div>
