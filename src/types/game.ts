@@ -12,6 +12,7 @@ export type GameScene =
   | 'SWOT_COMPLETE'
   | 'SMART_VIDEO'
   | 'SMART_DISCUSSION'
+  | 'SMART_INTRO'
   | 'SMART_THEORY'
   | 'SMART_GAME'
   | 'VICTORY';

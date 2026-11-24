@@ -574,17 +574,114 @@ export const App: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => setCurrentScene('SMART_THEORY')}
+                  onClick={() => setCurrentScene('SMART_INTRO')}
                   className="px-6 py-2.5 bg-[#7965F2] hover:bg-[#6853E8] text-white border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
                 >
-                  KHÁM PHÁ NGUYÊN TẮC SMART ►
+                  SLIDE 3: GIỚI THIỆU SMART ►
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ================= 6. SMART THEORY & COMPLETE GOAL ================= */}
+        {/* ================= 6. SLIDE 3: GIỚI THIỆU SMART ================= */}
+        {currentScene === 'SMART_INTRO' && (
+          <div className="relative w-full h-full flex flex-col justify-between overflow-hidden">
+            <div className="absolute inset-0 w-full h-full">
+              <img 
+                src="./assets/scenes/strategy_classroom_pristine.png" 
+                alt="Pristine Classroom Stage" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-[#151C45]/20 backdrop-blur-[1px]" />
+            </div>
+
+            {/* Mascot Linh Explaining on the side (only on large screens to avoid overlap) */}
+            <img 
+              src="./assets/characters/linh_threequarter_clean.png" 
+              alt="Linh Explaining SMART" 
+              className="absolute bottom-4 left-6 sm:left-10 h-[32%] sm:h-[40%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden xl:block pointer-events-none" 
+            />
+
+            <div className="relative z-20 w-full h-full flex flex-col justify-between p-4 sm:p-6 overflow-y-auto max-w-4xl mx-auto">
+              {/* Header Bar */}
+              <div className="mt-8 border-2 border-[#151C45] bg-white px-4 py-2 rounded-xl flex items-center justify-between shadow-[3px_3px_0px_#151C45]">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 bg-[#FF8426] text-white rounded-lg text-xs font-black font-heading border border-[#151C45]">
+                    SLIDE 3
+                  </span>
+                  <span className="font-heading font-black text-xs sm:text-sm text-[#151C45]">
+                    GIỚI THIỆU NGUYÊN TẮC SMART
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsPresenterOpen(true)}
+                  className="text-xs font-heading font-bold text-[#7965F2] hover:underline"
+                >
+                  🎙️ Lời dẫn diễn giả (Phím P)
+                </button>
+              </div>
+
+              {/* Main Card: SLIDE 3: GIỚI THIỆU SMART (Exactly matching user image) */}
+              <div className="my-auto py-3">
+                <div className="bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl p-6 sm:p-8 shadow-[8px_8px_0px_#151C45] max-w-2xl mx-auto space-y-5">
+                  <div className="text-center border-b-3 border-[#151C45]/20 pb-3">
+                    <h2 className="font-heading font-black text-2xl sm:text-3xl text-[#151C45] tracking-wide uppercase">
+                      SLIDE 3: GIỚI THIỆU SMART
+                    </h2>
+                  </div>
+
+                  {/* 5 SMART Items */}
+                  <div className="space-y-2.5">
+                    {[
+                      { letter: 'S', word: 'Specific', vi: 'Cụ thể', color: 'bg-[#FF8426]' },
+                      { letter: 'M', word: 'Measurable', vi: 'Đo lường được', color: 'bg-[#55C7AA]' },
+                      { letter: 'A', word: 'Achievable', vi: 'Khả thi', color: 'bg-[#7965F2]' },
+                      { letter: 'R', word: 'Relevant', vi: 'Thực tế / Phù hợp', color: 'bg-[#FFAA2B]' },
+                      { letter: 'T', word: 'Time-bound', vi: 'Có thời hạn', color: 'bg-[#F47E93]' },
+                    ].map((item) => (
+                      <div 
+                        key={item.letter}
+                        className="flex items-center justify-between p-3 sm:p-3.5 bg-white border-3 border-[#151C45] rounded-2xl shadow-[4px_4px_0px_#151C45] hover:translate-x-1 transition-all"
+                      >
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <span className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl ${item.color} text-white border-2 border-[#151C45] flex items-center justify-center font-comic font-black text-xl sm:text-2xl shadow-[2px_2px_0px_#151C45]`}>
+                            {item.letter}
+                          </span>
+                          <span className="font-heading font-black text-lg sm:text-2xl text-[#151C45] tracking-wide">
+                            {item.letter} - {item.word}
+                          </span>
+                        </div>
+                        <span className="px-3.5 py-1 bg-[#FFF4DF] border-2 border-[#151C45] rounded-xl font-heading font-extrabold text-xs sm:text-sm text-[#151C45]">
+                          {item.vi}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Action */}
+              <div className="flex justify-between items-center pt-2">
+                <button
+                  onClick={() => setCurrentScene('SMART_DISCUSSION')}
+                  className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs shadow-[2px_2px_0px_#151C45]"
+                >
+                  ◄ Quay lại thảo luận 2 phút
+                </button>
+
+                <button
+                  onClick={() => setCurrentScene('SMART_THEORY')}
+                  className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[4px_4px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                >
+                  MỤC TIÊU SMART HOÀN CHỈNH (SLIDE 4) ►
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================= 7. SMART THEORY & COMPLETE GOAL (SLIDE 4) ================= */}
         {currentScene === 'SMART_THEORY' && (
           <div className="relative w-full h-full flex flex-col justify-between overflow-hidden">
             <div className="absolute inset-0 w-full h-full">
@@ -599,7 +696,7 @@ export const App: React.FC = () => {
             <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 overflow-y-auto">
               <div className="mt-8 border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl flex items-center justify-between shadow-[2px_2px_0px_#151C45]">
                 <span className="font-heading font-black text-xs sm:text-sm text-[#FF8426]">
-                  PHẦN 4: 5 TRỤ CỘT SMART & MỤC TIÊU HOÀN CHỈNH
+                  SLIDE 4: MỤC TIÊU SMART HOÀN CHỈNH & PHÂN TÍCH 5 TIÊU CHÍ
                 </span>
                 <span className="text-[11px] font-bold text-[#151C45]/70">
                   Dựa trên bối cảnh video
@@ -633,12 +730,21 @@ export const App: React.FC = () => {
 
               {/* Bottom Actions */}
               <div className="flex justify-between items-center pt-1">
-                <button
-                  onClick={() => setIsPresenterOpen(true)}
-                  className="text-xs font-heading font-bold text-[#7965F2] hover:underline"
-                >
-                  💡 Xem phương án phản biện khi khán giả góp ý khác (Phím P)
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setCurrentScene('SMART_INTRO')}
+                    className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs shadow-[2px_2px_0px_#151C45]"
+                  >
+                    ◄ Quay lại Slide 3
+                  </button>
+
+                  <button
+                    onClick={() => setIsPresenterOpen(true)}
+                    className="text-xs font-heading font-bold text-[#7965F2] hover:underline hidden sm:block"
+                  >
+                    💡 Xem phương án phản biện khi khán giả góp ý khác (Phím P)
+                  </button>
+                </div>
 
                 <button
                   onClick={() => setCurrentScene('SMART_GAME')}

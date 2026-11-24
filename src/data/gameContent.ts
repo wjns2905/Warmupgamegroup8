@@ -349,7 +349,8 @@ export const VIDEO_DATA = {
     'Vậy nếu chúng ta là nhân vật trong video, làm thế nào để thoát khỏi vòng lặp này và thực sự hoàn thành công việc?'
   ],
   discussionPrompt: 'Trong 2 phút, hãy giúp nhân vật xây dựng một kế hoạch để THỰC SỰ HOÀN THÀNH CÔNG VIỆC thay vì tiếp tục trì hoãn. Hãy nghĩ về một mục tiêu và cách thực hiện sao cho nhân vật có thể bắt tay vào làm ngay.',
-  afterDiscussionRemark: 'Vừa rồi, chúng ta nhận được khá nhiều giải pháp thú vị, từ việc loại bỏ yếu tố gây xao nhãng, chia nhỏ công việc cho đến đặt deadline... Tuy nhiên, để biến những mong muốn thành hiện thực, chúng ta cần phương pháp SMART!'
+  afterDiscussionRemark: 'Vừa rồi, chúng ta nhận được khá nhiều giải pháp thú vị, từ việc loại bỏ yếu tố gây xao nhãng, chia nhỏ công việc cho đến đặt deadline... Tuy nhiên, để biến những mong muốn thành hiện thực, chúng ta cần phương pháp SMART!',
+  slide3SpeakerNote: 'Có thể thấy rằng để thoát khỏi tình trạng trì hoãn, chúng ta không chỉ cần sự quyết tâm mà còn cần biết mình muốn đạt được điều gì, làm thế nào để đạt được điều đó, liệu kế hoạch có khả thi hay không và cần hoàn thành trong khoảng thời gian nào. Vậy làm thế nào để biến những mong muốn tưởng chừng như đơn giản thành những mục tiêu rõ ràng và khả thi? Đó chính là điều mà phương pháp SMART sẽ giúp chúng ta giải quyết.'
 };
 
 export const SMART_PILLARS: SmartPillar[] = [
