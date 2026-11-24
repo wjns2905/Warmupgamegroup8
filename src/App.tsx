@@ -22,7 +22,9 @@ import {
   CheckCircle2,
   XCircle,
   HelpCircle,
-  Play
+  Play,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -48,6 +50,23 @@ export const App: React.FC = () => {
 
   // Presenter Modal
   const [isPresenterOpen, setIsPresenterOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
 
   // Confetti trigger
   const triggerConfetti = () => {
@@ -166,22 +185,22 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center p-2 sm:p-5 bg-[#FFF4DF] select-none font-sans">
+    <div className="relative w-screen h-screen overflow-hidden bg-[#151C45] select-none font-sans flex flex-col">
       
-      {/* ================= MAIN 16:9 GAME STAGE ================= */}
-      <div className="relative w-full max-w-5xl aspect-[16/10] sm:aspect-video rounded-[24px] sm:rounded-[36px] border-4 sm:border-6 border-[#151C45] overflow-hidden bg-[#151C45] shadow-[8px_8px_0px_#151C45] flex flex-col justify-between">
+      {/* ================= MAIN FULL SIZE WEB STAGE ================= */}
+      <div className="relative w-full h-full overflow-hidden bg-[#151C45] flex flex-col justify-between">
         
         {/* ================= TOP HUD: WARM UP GAME ================= */}
-        <div className="absolute top-2.5 sm:top-3.5 inset-x-3 sm:inset-x-5 flex items-center justify-between z-30 pointer-events-auto">
+        <div className="absolute top-3 sm:top-5 inset-x-4 sm:inset-x-8 flex items-center justify-between z-30 pointer-events-auto">
           {/* Left: Warm Up Game Title Capsule */}
-          <div className="flex items-center gap-2 px-3 py-1 sm:py-1.5 bg-[#151C45] text-white border-2 border-white/25 rounded-full text-xs sm:text-sm font-black font-heading shadow-[2px_2px_0px_rgba(0,0,0,0.4)]">
-            <span className="w-5 h-5 rounded-full bg-[#FFD343] text-[#151C45] flex items-center justify-center text-xs">🎮</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#151C45] text-white border-2 border-white/25 rounded-full text-xs sm:text-base font-black font-heading shadow-[3px_3px_0px_rgba(0,0,0,0.4)]">
+            <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FFD343] text-[#151C45] flex items-center justify-center text-xs sm:text-sm">🎮</span>
             <span>WARM UP GAME</span>
             <span className="text-[#FFD343] font-medium hidden sm:inline">• SWOT & SMART</span>
           </div>
 
           {/* Center: Stage Indicator */}
-          <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-white/95 border-2 border-[#151C45] rounded-full text-xs font-black text-[#151C45] shadow-[2px_2px_0px_#151C45]">
+          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-white/95 border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[3px_3px_0px_#151C45]">
             {currentScene === 'WARMUP_INTRO' && <span>🚀 KHỞI ĐỘNG</span>}
             {currentScene === 'SWOT_QUIZ' && <span>📝 CÂU HỎI SWOT {currentSwotIdx + 1}/10</span>}
             {currentScene === 'SWOT_COMPLETE' && <span>🎉 HOÀN THÀNH SWOT</span>}
@@ -192,19 +211,27 @@ export const App: React.FC = () => {
             {currentScene === 'VICTORY' && <span>🏆 TỔNG KẾT CHIẾN THẮNG</span>}
           </div>
 
-          {/* Right: XP & Settings Gear */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#FFD343] border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[2px_2px_0px_#151C45]">
+          {/* Right: XP, Fullscreen & Settings Gear */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FFD343] border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[2px_2px_0px_#151C45]">
               <span>⭐</span>
               <span>{xp} XP</span>
             </div>
 
             <button
+              onClick={toggleFullscreen}
+              title={isFullscreen ? "Thu nhỏ cửa sổ (Esc)" : "Toàn màn hình (F11)"}
+              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
+
+            <button
               onClick={() => setIsPresenterOpen(true)}
               title="Cài đặt & Bảng điều khiển thuyết trình (Phím P)"
-              className="p-1.5 sm:p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
+              className="p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
             >
-              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Settings className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -300,17 +327,17 @@ export const App: React.FC = () => {
             />
 
             {/* Content Container */}
-            <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 overflow-y-auto">
+            <div className="relative z-20 w-full h-full flex flex-col justify-between p-4 sm:p-8 overflow-y-auto">
               {/* Top Indicator */}
-              <div className="mt-8 sm:mt-10 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45]">
-                <span className="font-heading font-black text-xs sm:text-sm text-[#7965F2]">
+              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
+                <span className="font-heading font-black text-xs sm:text-base text-[#7965F2]">
                   CÂU HỎI {currentSwotIdx + 1} / {SWOT_QUESTIONS.length}: {SWOT_QUESTIONS[currentSwotIdx].title}
                 </span>
-                <div className="flex gap-1">
+                <div className="flex gap-1.5">
                   {SWOT_QUESTIONS.map((_, i) => (
                     <div
                       key={i}
-                      className={`w-3.5 sm:w-5 h-2 rounded-full border border-[#151C45] ${
+                      className={`w-4 sm:w-6 h-2.5 rounded-full border border-[#151C45] ${
                         i < currentSwotIdx ? 'bg-[#55C7AA]' : i === currentSwotIdx ? 'bg-[#FF8426] animate-pulse' : 'bg-gray-200'
                       }`}
                     />
@@ -319,13 +346,13 @@ export const App: React.FC = () => {
               </div>
 
               {/* Question Text & Options Card */}
-              <div className="my-auto py-2 space-y-3 max-w-2xl bg-[#FFFDF7]/95 border-3 border-[#151C45] rounded-3xl p-4 sm:p-5 shadow-[6px_6px_0px_#151C45]">
-                <h3 className="font-heading font-black text-base sm:text-lg text-[#151C45] leading-snug">
+              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
+                <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-[#151C45] leading-snug">
                   {SWOT_QUESTIONS[currentSwotIdx].question}
                 </h3>
 
                 {/* 4 Options Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {SWOT_QUESTIONS[currentSwotIdx].options.map((opt) => {
                     const isSelected = selectedSwotAnswer === opt.key;
                     const isCorrect = opt.key === SWOT_QUESTIONS[currentSwotIdx].correctKey;
@@ -342,12 +369,12 @@ export const App: React.FC = () => {
                         key={opt.key}
                         disabled={isSwotSubmitted}
                         onClick={() => handleSelectSwotAnswer(opt.key)}
-                        className={`p-2 sm:p-2.5 border-2 sm:border-3 rounded-xl sm:rounded-2xl shadow-[2px_2px_0px_#151C45] text-left flex items-start gap-2 transition-all ${btnColor}`}
+                        className={`p-3 sm:p-4 border-2 sm:border-3 rounded-2xl shadow-[3px_3px_0px_#151C45] text-left flex items-start gap-3 transition-all ${btnColor}`}
                       >
-                        <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center border-2 border-[#151C45] rounded-lg bg-white text-[#151C45] font-heading font-black text-xs">
+                        <span className="w-7 h-7 flex-shrink-0 flex items-center justify-center border-2 border-[#151C45] rounded-lg bg-white text-[#151C45] font-heading font-black text-sm">
                           {opt.key}
                         </span>
-                        <span className="text-xs sm:text-sm font-heading font-bold leading-tight">
+                        <span className="text-sm sm:text-base font-heading font-bold leading-snug">
                           {opt.text}
                         </span>
                       </button>
@@ -357,22 +384,22 @@ export const App: React.FC = () => {
 
                 {/* Feedback Alert with full explanation from document */}
                 {isSwotSubmitted && (
-                  <div className={`p-2.5 sm:p-3 rounded-xl border-2 border-[#151C45] text-xs font-heading font-bold ${
+                  <div className={`p-3 sm:p-4 rounded-2xl border-2 sm:border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
                     selectedSwotAnswer === SWOT_QUESTIONS[currentSwotIdx].correctKey 
                       ? 'bg-[#55C7AA]/35 text-[#151C45]' 
                       : 'bg-[#F47E93]/35 text-[#151C45]'
                   }`}>
-                    <div className="font-black mb-0.5">
+                    <div className="font-black mb-1 text-sm sm:text-base">
                       {selectedSwotAnswer === SWOT_QUESTIONS[currentSwotIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}
                       <span className="ml-2 font-normal">Đáp án đúng là: <b>{SWOT_QUESTIONS[currentSwotIdx].correctKey}</b></span>
                     </div>
-                    <p className="font-sans text-[11px] text-[#151C45]/90">{SWOT_QUESTIONS[currentSwotIdx].explanation}</p>
+                    <p className="font-sans text-xs sm:text-sm text-[#151C45]/90 leading-relaxed">{SWOT_QUESTIONS[currentSwotIdx].explanation}</p>
                   </div>
                 )}
               </div>
 
               {/* Bottom Actions */}
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-2 max-w-4xl mx-auto w-full">
                 {isSwotSubmitted ? (
                   <button
                     onClick={handleNextSwotQuestion}
@@ -662,16 +689,16 @@ export const App: React.FC = () => {
               className="absolute bottom-4 right-4 sm:right-8 h-[30%] sm:h-[38%] object-contain drop-shadow-[3px_3px_0px_#151C45] z-10 hidden md:block pointer-events-none" 
             />
 
-            <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 overflow-y-auto">
+            <div className="relative z-20 w-full h-full flex flex-col justify-between p-4 sm:p-8 overflow-y-auto">
               {/* Top Indicator */}
-              <div className="mt-8 sm:mt-10 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45]">
-                <span className="font-heading font-black text-xs sm:text-sm text-[#FF8426]">
+              <div className="mt-14 sm:mt-16 flex items-center justify-between border-2 border-[#151C45] bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-[3px_3px_0px_#151C45] max-w-4xl mx-auto w-full">
+                <span className="font-heading font-black text-xs sm:text-base text-[#FF8426]">
                   THỬ THÁCH SMART {currentSmartIdx + 1} / {SMART_GAME_QUESTIONS.length}: {SMART_GAME_QUESTIONS[currentSmartIdx].title}
                 </span>
                 
                 {/* 9 Chapters Checklist Mini widget */}
-                <div className="flex items-center gap-1">
-                  <span className="text-[10px] font-black text-[#151C45] mr-1 hidden sm:inline">Checklist 9 chương:</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-black text-[#151C45] mr-1 hidden sm:inline">Checklist 9 chương:</span>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((ch) => {
                     const isChecked = checkedChapters.includes(ch);
                     return (
@@ -679,8 +706,8 @@ export const App: React.FC = () => {
                         key={ch}
                         onClick={() => toggleChapter(ch)}
                         title={`Chương ${ch}`}
-                        className={`w-5 h-5 rounded border border-[#151C45] font-heading font-black text-[9px] flex items-center justify-center ${
-                          isChecked ? 'bg-[#55C7AA] text-[#151C45]' : 'bg-white text-gray-400'
+                        className={`w-6 h-6 rounded-lg border-2 border-[#151C45] font-heading font-black text-xs flex items-center justify-center transition-all ${
+                          isChecked ? 'bg-[#55C7AA] text-[#151C45] shadow-[1px_1px_0px_#151C45]' : 'bg-white text-gray-400 hover:border-[#FF8426]'
                         }`}
                       >
                         {ch}
@@ -691,13 +718,13 @@ export const App: React.FC = () => {
               </div>
 
               {/* Question Text & Options Card */}
-              <div className="my-auto py-2 space-y-3 max-w-2xl bg-[#FFFDF7]/95 border-3 border-[#151C45] rounded-3xl p-4 sm:p-5 shadow-[6px_6px_0px_#151C45]">
-                <h3 className="font-heading font-black text-base sm:text-lg text-[#151C45] leading-snug">
+              <div className="my-auto py-3 space-y-4 max-w-4xl mx-auto w-full bg-[#FFFDF7]/95 border-4 border-[#151C45] rounded-3xl p-5 sm:p-8 shadow-[8px_8px_0px_#151C45]">
+                <h3 className="font-heading font-black text-lg sm:text-xl md:text-2xl text-[#151C45] leading-snug">
                   {SMART_GAME_QUESTIONS[currentSmartIdx].question}
                 </h3>
 
                 {/* 4 Options Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {SMART_GAME_QUESTIONS[currentSmartIdx].options.map((opt) => {
                     const isSelected = selectedSmartAnswer === opt.key;
                     const isCorrect = opt.key === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey;
@@ -714,12 +741,12 @@ export const App: React.FC = () => {
                         key={opt.key}
                         disabled={isSmartSubmitted}
                         onClick={() => handleSelectSmartAnswer(opt.key)}
-                        className={`p-2 sm:p-2.5 border-2 sm:border-3 rounded-xl sm:rounded-2xl shadow-[2px_2px_0px_#151C45] text-left flex items-start gap-2 transition-all ${btnColor}`}
+                        className={`p-3 sm:p-4 border-2 sm:border-3 rounded-2xl shadow-[3px_3px_0px_#151C45] text-left flex items-start gap-3 transition-all ${btnColor}`}
                       >
-                        <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center border-2 border-[#151C45] rounded-lg bg-white text-[#151C45] font-heading font-black text-xs">
+                        <span className="w-7 h-7 flex-shrink-0 flex items-center justify-center border-2 border-[#151C45] rounded-lg bg-white text-[#151C45] font-heading font-black text-sm">
                           {opt.key}
                         </span>
-                        <span className="text-xs sm:text-sm font-heading font-bold leading-tight">
+                        <span className="text-sm sm:text-base font-heading font-bold leading-snug">
                           {opt.text}
                         </span>
                       </button>
@@ -729,26 +756,26 @@ export const App: React.FC = () => {
 
                 {/* Feedback Alert */}
                 {isSmartSubmitted && (
-                  <div className={`p-2.5 sm:p-3 rounded-xl border-2 border-[#151C45] text-xs font-heading font-bold ${
+                  <div className={`p-3 sm:p-4 rounded-2xl border-2 sm:border-3 border-[#151C45] text-xs sm:text-sm font-heading font-bold ${
                     selectedSmartAnswer === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey 
                       ? 'bg-[#55C7AA]/35 text-[#151C45]' 
                       : 'bg-[#F47E93]/35 text-[#151C45]'
                   }`}>
-                    <div className="font-black mb-0.5">
+                    <div className="font-black mb-1 text-sm sm:text-base">
                       {selectedSmartAnswer === SMART_GAME_QUESTIONS[currentSmartIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}
                       <span className="ml-2 font-normal">Đáp án đúng là: <b>{SMART_GAME_QUESTIONS[currentSmartIdx].correctKey}</b></span>
                     </div>
-                    <p className="font-sans text-[11px] text-[#151C45]/90">{SMART_GAME_QUESTIONS[currentSmartIdx].explanation}</p>
+                    <p className="font-sans text-xs sm:text-sm text-[#151C45]/90 leading-relaxed">{SMART_GAME_QUESTIONS[currentSmartIdx].explanation}</p>
                   </div>
                 )}
               </div>
 
               {/* Bottom Actions */}
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-2 max-w-4xl mx-auto w-full">
                 {isSmartSubmitted ? (
                   <button
                     onClick={handleNextSmartQuestion}
-                    className="px-5 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-6 py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
                   >
                     <span>{currentSmartIdx < SMART_GAME_QUESTIONS.length - 1 ? 'THỬ THÁCH TIẾP THEO ►' : 'TỔNG KẾT CHIẾN THẮNG ►'}</span>
                   </button>
