@@ -66,37 +66,40 @@ export const BackgroundView: React.FC<BackgroundViewProps> = ({ bg, children }) 
       )}
 
       {bg === 'smart_lab' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#122228] via-[#152e35] to-[#0a1418]">
-          <div className="absolute inset-0 bg-[radial-gradient(#58CDB5_1px,transparent_1px)] [background-size:28px_28px] opacity-25" />
-          <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-mint/15 to-transparent pointer-events-none" />
-          <div className="absolute top-20 right-24 w-80 h-64 border border-mint/30 rounded-xl bg-midnight/40 p-4 opacity-40">
-            <div className="text-xs font-digital text-mint flex items-center justify-between border-b border-mint/30 pb-2">
-              <span>🎯 SMART TARGET PROTOCOL</span>
-              <span className="text-amber">V.2.0</span>
-            </div>
-            <div className="mt-3 space-y-2 text-[11px] font-mono text-cream/70">
-              <div className="flex justify-between"><span>Specific (Cụ thể)</span><span className="text-mint">Ready</span></div>
-              <div className="flex justify-between"><span>Measurable (Đo lường)</span><span className="text-mint">Ready</span></div>
-              <div className="flex justify-between"><span>Achievable (Khả thi)</span><span className="text-mint">Ready</span></div>
-              <div className="flex justify-between"><span>Relevant (Liên quan)</span><span className="text-mint">Ready</span></div>
-              <div className="flex justify-between"><span>Time-bound (Thời hạn)</span><span className="text-mint">Ready</span></div>
-            </div>
-          </div>
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src="./assets/backgrounds/bg_smart_lab.jpg" 
+            alt="Iris SMART Goal Lab" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/3 w-[500px] h-[500px] rounded-full bg-mint/15 blur-3xl pointer-events-none animate-pulse" />
         </div>
       )}
 
       {bg === 'fashion_store' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#251b3a] via-[#1f1a3b] to-[#120f26]">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber/40 via-transparent to-transparent" />
-          <div className="absolute top-16 left-20 border border-violet/40 rounded-xl p-4 bg-midnight/60 backdrop-blur-sm max-w-sm">
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src="./assets/backgrounds/bg_fashion_store.jpg" 
+            alt="Fashion Livestream Store" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-16 left-20 border border-violet/40 rounded-xl p-4 bg-midnight/70 backdrop-blur-sm max-w-sm pointer-events-none shadow-xl">
             <div className="flex items-center gap-2 text-xs font-bold text-coral">
               <span className="w-2.5 h-2.5 rounded-full bg-coral animate-ping" />
               <span>LIVESTREAM SHOPPING STAGE</span>
             </div>
-            <div className="mt-2 text-xs text-cream/80">
+            <div className="mt-2 text-xs text-cream/90 font-medium">
               Điểm mạnh: Thiết kế theo mùa độc quyền + Khách hàng trung thành.
             </div>
-            <div className="mt-1 text-xs text-mint">
+            <div className="mt-1 text-xs text-mint font-medium">
               Cơ hội: Xu hướng mua sắm trực tuyến tăng trưởng vượt bậc!
             </div>
           </div>
@@ -104,13 +107,22 @@ export const BackgroundView: React.FC<BackgroundViewProps> = ({ bg, children }) 
       )}
 
       {bg === 'career_fair' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#18263a] via-[#192b45] to-[#0e1728]">
-          <div className="absolute top-16 right-20 border border-mint/40 rounded-xl p-4 bg-midnight/70 backdrop-blur-sm max-w-sm">
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src="./assets/backgrounds/bg_career_fair.jpg" 
+            alt="University Career Fair" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute top-16 right-20 border border-mint/40 rounded-xl p-4 bg-midnight/80 backdrop-blur-sm max-w-sm pointer-events-none shadow-xl">
             <div className="flex items-center gap-2 text-xs font-bold text-mint">
               <span className="text-amber">★</span>
               <span>UNIVERSITY CAREER & INTERNSHIP FAIR</span>
             </div>
-            <div className="mt-2 text-xs text-cream/80">
+            <div className="mt-2 text-xs text-cream/90 font-medium">
               Nhà trường kết nối sinh viên với các tập đoàn và doanh nghiệp du lịch.
             </div>
           </div>
@@ -118,18 +130,34 @@ export const BackgroundView: React.FC<BackgroundViewProps> = ({ bg, children }) 
       )}
 
       {bg === 'library' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#242232] via-[#2b253b] to-[#14121d]">
-          <div className="absolute top-0 inset-x-0 h-1/2 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber/20 via-transparent to-transparent" />
-          <div className="absolute bottom-28 left-20 border border-amber/30 rounded-xl p-4 bg-midnight/60 backdrop-blur-sm">
-            <span className="text-xs font-mono text-amber">📚 SILENT STUDY ZONE • 100% FOCUS</span>
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src="./assets/backgrounds/bg_library.jpg" 
+            alt="University Silent Library" 
+            className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/30 pointer-events-none" />
+          <div className="absolute bottom-28 left-20 border border-amber/40 rounded-xl p-3 bg-midnight/80 backdrop-blur-sm pointer-events-none shadow-lg">
+            <span className="text-xs font-mono text-amber font-bold">📚 SILENT STUDY ZONE • 100% FOCUS</span>
           </div>
         </div>
       )}
 
       {bg === 'victory' && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1c1340] via-[#243a4e] to-[#0b1324]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,202,100,0.25)_0%,_transparent_70%)] animate-pulse-glow" />
-          <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(120,85,217,0.15)_25%,transparent_25%),linear-gradient(-45deg,rgba(88,205,181,0.15)_25%,transparent_25%)] bg-[size:3rem_3rem]" />
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src="./assets/backgrounds/bg_victory.jpg" 
+            alt="Level Up Hall of Fame" 
+            className="w-full h-full object-cover object-center filter contrast-110 brightness-95"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-midnight-dark/75 via-transparent to-midnight-dark/25 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,202,100,0.2)_0%,_transparent_70%)] animate-pulse-glow pointer-events-none" />
         </div>
       )}
 

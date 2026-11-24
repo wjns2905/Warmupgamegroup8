@@ -23,6 +23,9 @@ export const SmartDiscussionScene: React.FC<SmartDiscussionSceneProps> = ({ onCo
             soundManager.playTimerBell();
             return 0;
           }
+          if (prev <= 6) {
+            soundManager.playCountdownTick();
+          }
           return prev - 1;
         });
       }, 1000);

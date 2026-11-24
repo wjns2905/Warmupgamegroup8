@@ -237,6 +237,26 @@ class SoundController {
     });
   }
 
+  public playCountdownTick() {
+    if (this.sfxMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.05);
+  }
+
   // --- Procedural BGM Generation ---
 
   public playBGM(type: 'menu' | 'prologue' | 'swot' | 'smart' | 'victory') {

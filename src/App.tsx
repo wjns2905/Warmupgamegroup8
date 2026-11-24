@@ -227,8 +227,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-midnight-dark flex items-center justify-center font-sans">
-      <div className="relative w-full h-full max-w-[1920px] max-h-[1080px] aspect-video overflow-hidden shadow-2xl bg-midnight flex flex-col justify-between">
+    <div className="relative w-screen h-screen max-h-[100dvh] overflow-hidden bg-midnight-dark flex items-center justify-center font-sans">
+      <div className="relative w-full max-w-[1920px] max-h-[100dvh] aspect-video overflow-hidden shadow-2xl bg-midnight flex flex-col justify-between select-none">
         <GameHUD
           currentScene={currentScene}
           xp={xp}
