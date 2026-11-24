@@ -694,83 +694,83 @@ export const App: React.FC = () => {
               <div className="absolute inset-0 bg-[#151C45]/15 backdrop-blur-[1px]" />
             </div>
 
-            <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 overflow-y-auto max-w-7xl mx-auto">
+            <div className="relative z-20 w-full h-full flex flex-col justify-between p-3 sm:p-5 md:p-6 overflow-y-auto max-w-7xl mx-auto gap-3">
               {/* Header Bar */}
-              <div className="mt-8 border-2 border-[#151C45] bg-white px-4 py-2 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-[3px_3px_0px_#151C45]">
+              <div className="mt-8 border-2 border-[#151C45] bg-white px-4 py-2 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-[3px_3px_0px_#151C45] shrink-0">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-[#FF8426] text-white rounded-lg text-[10px] font-black font-heading border border-[#151C45]">
+                    <span className="px-2.5 py-0.5 bg-[#FF8426] text-white rounded-lg text-xs font-black font-heading border border-[#151C45]">
                       SLIDE
                     </span>
-                    <h2 className="font-heading font-black text-xs sm:text-base text-[#151C45]">
+                    <h2 className="font-heading font-black text-sm sm:text-lg text-[#151C45]">
                       {SMART_SLIDE_DATA.slideTitle}
                     </h2>
                   </div>
-                  <p className="font-sans text-[11px] sm:text-xs text-[#151C45]/80 italic mt-0.5">
+                  <p className="font-sans text-xs sm:text-sm text-[#151C45]/80 italic mt-0.5">
                     {SMART_SLIDE_DATA.slideSubtitle}
                   </p>
                 </div>
 
                 <button
                   onClick={() => setIsPresenterOpen(true)}
-                  className="text-xs font-heading font-bold text-[#7965F2] hover:underline self-end sm:self-center shrink-0"
+                  className="text-xs sm:text-sm font-heading font-bold text-[#7965F2] hover:underline self-end sm:self-center shrink-0"
                 >
                   💡 Ghi chú diễn giả (Phím P)
                 </button>
               </div>
 
               {/* Khối nổi bật: Câu mục tiêu SMART */}
-              <div className="p-3 sm:p-3.5 bg-[#FFD343] border-3 border-[#151C45] rounded-2xl shadow-[4px_4px_0px_#151C45] my-1.5 text-left">
-                <span className="px-2 py-0.5 bg-[#151C45] text-white rounded-full font-heading font-black text-[10px] inline-block mb-1">
+              <div className="p-3.5 sm:p-5 bg-[#FFD343] border-3 sm:border-4 border-[#151C45] rounded-2xl sm:rounded-3xl shadow-[5px_5px_0px_#151C45] text-left shrink-0">
+                <span className="px-3 py-1 bg-[#151C45] text-white rounded-full font-heading font-black text-xs inline-block mb-1.5 shadow-[1px_1px_0px_#151C45]">
                   🎯 CÂU MỤC TIÊU SMART HOÀN CHỈNH
                 </span>
-                <p className="font-heading font-bold text-xs sm:text-sm text-[#151C45] leading-snug">
+                <p className="font-heading font-extrabold text-xs sm:text-base md:text-lg text-[#151C45] leading-relaxed">
                   "{SMART_SLIDE_DATA.goalFull}"
                 </p>
               </div>
 
               {/* Nội dung 5 cột / 5 thẻ phân tích */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-2 sm:gap-2.5 my-auto">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-2.5 sm:gap-3 flex-1 items-stretch">
                 {SMART_SLIDE_DATA.pillars.map((p) => (
                   <div 
                     key={p.letter} 
-                    className="p-2.5 sm:p-3 bg-white border-3 border-[#151C45] rounded-2xl shadow-[3px_3px_0px_#151C45] flex flex-col justify-between text-left space-y-2"
+                    className="p-3 sm:p-4 bg-white border-3 border-[#151C45] rounded-2xl sm:rounded-3xl shadow-[4px_4px_0px_#151C45] flex flex-col justify-between text-left h-full"
                   >
-                    <div>
+                    <div className="space-y-2.5 flex-1 flex flex-col">
                       {/* Top Letter & Title */}
-                      <div className="flex items-center gap-2 border-b-2 border-[#151C45]/15 pb-1.5 mb-1.5">
+                      <div className="flex items-center gap-2.5 border-b-2 border-[#151C45]/15 pb-2">
                         <span 
                           style={{ backgroundColor: p.color }}
-                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-white border-2 border-[#151C45] flex items-center justify-center font-comic font-black text-sm sm:text-base shadow-[1px_1px_0px_#151C45] shrink-0"
+                          className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl text-white border-2 border-[#151C45] flex items-center justify-center font-comic font-black text-lg sm:text-xl shadow-[2px_2px_0px_#151C45] shrink-0"
                         >
                           {p.letter}
                         </span>
                         <div>
-                          <h4 className="font-heading font-black text-[11px] sm:text-xs text-[#151C45] leading-tight">
+                          <h4 className="font-heading font-black text-xs sm:text-sm md:text-base text-[#151C45] leading-tight">
                             {p.letter} – {p.nameEn}
                           </h4>
-                          <span className="text-[10px] font-bold text-[#151C45]/70">
+                          <span className="text-xs font-bold text-[#151C45]/70">
                             ({p.nameVi})
                           </span>
                         </div>
                       </div>
 
                       {/* Point 1 */}
-                      <div className="space-y-0.5 mb-1.5">
-                        <span className="font-heading font-black text-[10px] sm:text-[11px] text-[#151C45] block">
+                      <div className="space-y-1 flex-1">
+                        <span className="font-heading font-black text-xs sm:text-sm text-[#151C45] block">
                           {p.point1Title}
                         </span>
-                        <p className="font-sans text-[10px] sm:text-[11px] text-[#151C45]/85 leading-snug bg-[#FFF4DF] p-1.5 rounded-lg border border-[#151C45]/20">
+                        <p className="font-sans text-xs sm:text-[13px] text-[#151C45] leading-relaxed bg-[#FFF4DF] p-2.5 rounded-xl border border-[#151C45]/25">
                           {p.point1Text}
                         </p>
                       </div>
 
                       {/* Point 2 */}
-                      <div className="space-y-0.5">
-                        <span className="font-heading font-black text-[10px] sm:text-[11px] text-[#151C45] block">
+                      <div className="space-y-1 flex-1">
+                        <span className="font-heading font-black text-xs sm:text-sm text-[#151C45] block">
                           {p.point2Title}
                         </span>
-                        <p className="font-sans text-[10px] sm:text-[11px] text-[#151C45]/85 leading-snug bg-[#FFFDF7] p-1.5 rounded-lg border border-[#151C45]/20">
+                        <p className="font-sans text-xs sm:text-[13px] text-[#151C45] leading-relaxed bg-[#FFFDF7] p-2.5 rounded-xl border border-[#151C45]/25">
                           {p.point2Text}
                         </p>
                       </div>
@@ -780,18 +780,18 @@ export const App: React.FC = () => {
               </div>
 
               {/* Bottom Actions */}
-              <div className="flex justify-between items-center pt-1">
+              <div className="flex justify-between items-center pt-1 shrink-0">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setCurrentScene('SMART_INTRO')}
-                    className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="px-4 py-2 bg-white hover:bg-gray-100 text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-bold text-xs sm:text-sm shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
                   >
                     ◄ Quay lại SMART
                   </button>
 
                   <button
                     onClick={() => setIsPresenterOpen(true)}
-                    className="text-xs font-heading font-bold text-[#151C45] bg-white/95 border-2 border-[#151C45] px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45] hover:bg-[#FFF4DF] hidden sm:block transition-all"
+                    className="text-xs sm:text-sm font-heading font-bold text-[#151C45] bg-white/95 border-2 border-[#151C45] px-3.5 py-1.5 rounded-xl shadow-[2px_2px_0px_#151C45] hover:bg-[#FFF4DF] hidden sm:block transition-all"
                   >
                     💡 Xem phương án phản biện khi khán giả góp ý khác (Phím P)
                   </button>
