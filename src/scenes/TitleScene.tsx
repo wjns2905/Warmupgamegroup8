@@ -20,6 +20,7 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
   onContinueGame,
 }) => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showBannerPreview, setShowBannerPreview] = useState(false);
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between p-8 sm:p-12 z-20">
@@ -132,21 +133,29 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
         </div>
 
         <div className="lg:col-span-5 flex justify-center">
-          <div className="relative group rounded-2xl overflow-hidden border-2 border-violet/60 shadow-[0_0_40px_rgba(120,85,217,0.5)] bg-midnight/80 max-w-md transform group-hover:scale-[1.02] transition-transform duration-500">
+          <div 
+            onClick={() => {
+              soundManager.playClick();
+              setShowBannerPreview(true);
+            }}
+            className="relative group rounded-2xl overflow-hidden border-2 border-violet/60 shadow-[0_0_40px_rgba(120,85,217,0.5)] bg-midnight/80 max-w-lg w-full transform group-hover:scale-[1.02] transition-transform duration-500 cursor-pointer aspect-video"
+            title="Nhấn để phóng to ảnh banner"
+          >
             <img 
-              src="./assets/characters/key_visual.jpg" 
-              alt="Level Up Cast" 
-              className="w-full h-auto object-cover object-center filter contrast-105"
+              src="./images/banner.jpg" 
+              alt="Level Up! - The Self-Discovery Quest Banner" 
+              className="w-full h-full object-cover object-center filter contrast-105 group-hover:brightness-110 transition-all duration-500"
             />
-            <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-midnight via-midnight/80 to-transparent flex items-center justify-between">
+            <div className="absolute inset-0 bg-gradient-to-t from-midnight/90 via-transparent to-transparent opacity-90 pointer-events-none" />
+            <div className="absolute bottom-0 inset-x-0 p-4 flex items-center justify-between pointer-events-none">
               <div>
                 <span className="text-xs font-heading font-bold text-cream flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-mint animate-pulse" />
-                  ALEX • NOVA • IRIS • GLITCH
+                  LEVEL UP! OFFICIAL BANNER
                 </span>
-                <p className="text-[10px] text-cream/60">Trải nghiệm Visual Novel học tập tương tác lớp học</p>
+                <p className="text-[10px] text-cream/70">Alex • Nova • Iris • Glitch (Click để xem chi tiết)</p>
               </div>
-              <span className="text-[11px] font-mono text-amber font-bold">16:9 HD</span>
+              <span className="text-[11px] font-mono text-amber font-bold bg-midnight/80 px-2.5 py-1 rounded border border-amber/30">16:9 HD</span>
             </div>
           </div>
         </div>
@@ -205,6 +214,49 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
                 className="px-6 py-2 rounded-xl bg-violet hover:bg-violet-light text-cream font-bold text-xs transition-colors"
               >
                 Đã Hiểu, Bắt Đầu Thôi!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBannerPreview && (
+        <div 
+          onClick={() => setShowBannerPreview(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-midnight-dark/95 backdrop-blur-lg animate-fadeIn cursor-pointer"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            className="relative max-w-5xl w-full rounded-2xl overflow-hidden border-2 border-amber/70 shadow-[0_0_60px_rgba(255,202,100,0.4)] bg-midnight cursor-default"
+          >
+            <div className="absolute top-3 right-3 z-10">
+              <button 
+                onClick={() => setShowBannerPreview(false)}
+                className="p-2 rounded-full bg-midnight/80 hover:bg-coral border border-white/20 text-cream transition-colors shadow-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <img 
+              src="./images/banner.jpg" 
+              alt="Level Up! - Official 16:9 Banner" 
+              className="w-full h-auto object-contain max-h-[80vh]"
+            />
+            <div className="p-4 bg-midnight/95 border-t border-violet/40 flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-heading font-black text-amber flex items-center gap-2">
+                  <span>LEVEL UP! – THE SELF-DISCOVERY QUEST</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-mint/20 text-mint font-mono">16:9 BANNER</span>
+                </h4>
+                <p className="text-xs text-cream/70 font-sans mt-0.5">
+                  Bộ nhận diện nhân vật: Alex (Nhân vật chính) • Nova (SWOT Mentor) • Iris (SMART Guide) • Glitch (Quái vật trì hoãn)
+                </p>
+              </div>
+              <button
+                onClick={() => setShowBannerPreview(false)}
+                className="px-4 py-1.5 rounded-lg bg-violet hover:bg-violet-light text-cream text-xs font-heading font-bold"
+              >
+                Đóng
               </button>
             </div>
           </div>
