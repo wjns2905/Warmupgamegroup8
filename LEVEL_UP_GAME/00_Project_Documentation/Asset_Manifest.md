@@ -17,11 +17,11 @@
 ### GROUP 0: REFERENCE LOCK & ART BIBLE (5 ASSETS)
 | Asset ID | Tên tài nguyên | Định dạng / Tỷ lệ | Nền | Thư mục lưu trữ | Trạng thái |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `CHAR_MINH_REF_V01` | Minh Character Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `PROMPT_READY` |
-| `CHAR_LINH_REF_V01` | Linh Character Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `PROMPT_READY` |
-| `CHAR_TICK_REF_V01` | Tick Mascot Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `PROMPT_READY` |
-| `BRAND_GUIDELINE_BOARD_V01` | Brand Guideline Board | 16:9 Widescreen | Warm Cream | `01_Brand_Identity/Brand_Guidelines/` | `PROMPT_READY` |
-| `UI_VN_MOCKUP_SAMPLE_V01` | VN UI Layout Sample Mockup | 16:9 (1920x1080) | In-game Scene | `00_Project_Documentation/` | `PROMPT_READY` |
+| `CHAR_MINH_REF_V01` | Minh Character Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `APPROVED` |
+| `CHAR_LINH_REF_V01` | Linh Character Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `APPROVED` |
+| `CHAR_TICK_REF_V01` | Tick Mascot Reference Sheet | 16:9 Widescreen | Warm Cream | `02_Characters/Reference_Sheets/` | `APPROVED` |
+| `BRAND_GUIDELINE_BOARD_V01` | Brand Guideline Board | 16:9 Widescreen | Warm Cream | `01_Brand_Identity/Brand_Guidelines/` | `APPROVED` |
+| `UI_VN_MOCKUP_SAMPLE_V01` | VN UI Layout Sample Mockup | 16:9 (1920x1080) | In-game Scene | `00_Project_Documentation/` | `APPROVED` |
 
 ---
 

@@ -26,6 +26,12 @@
   - [x] Soạn thảo `Storyboard.md` tích hợp 8 câu hỏi SWOT và mục tiêu SMART 5 ngày 9 chương.
   - [x] Đặc tả chi tiết 3 nhân vật: Minh (Protagonist), Linh (Mentor / Companion), Tick (Clock Mascot).
   - [x] Thiết lập prompt chuẩn ChatGPT theo Template Section 17 cho 3 Character Reference Sheets, Brand Board và VN UI Mockup.
+  - [x] **Sinh ảnh thành công 100% trên ChatGPT & Lưu trữ**:
+    - [x] `CHAR_MINH_REF_V01.png` (Minh Reference Sheet - 1672x941 PNG).
+    - [x] `CHAR_LINH_REF_V01.png` (Linh Reference Sheet - 1672x941 PNG).
+    - [x] `CHAR_TICK_REF_V01.png` (Tick Mascot Reference Sheet - 1672x941 PNG).
+    - [x] `BRAND_GUIDELINE_BOARD_V01.png` (Brand Guideline Board - 1672x941 PNG).
+    - [x] `UI_VN_MOCKUP_SAMPLE_V01.png` (In-Game VN UI Mockup - 1672x941 PNG).
 
 - [x] **Step 4: Thiết lập Asset Manifest & Toàn bộ Prompts ChatGPT**
   - [x] Soạn thảo `Asset_Manifest.md` quản lý 155 assets với đầy đủ mã định danh, loại, tỷ lệ, nền, trạng thái và quy chuẩn đặt tên.
