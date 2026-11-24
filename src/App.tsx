@@ -404,7 +404,7 @@ export const App: React.FC = () => {
 
             {/* Impeccable Clean Cheering Sprites */}
             <img 
-              src="./assets/characters/linh_action_clean.png" 
+              src="./assets/characters/linh_threequarter_clean.png" 
               alt="Linh Cheering" 
               className="absolute bottom-0 left-6 sm:left-12 h-[52%] sm:h-[62%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden sm:block pointer-events-none" 
             />
@@ -781,7 +781,7 @@ export const App: React.FC = () => {
               className="absolute bottom-0 left-4 sm:left-10 h-[50%] sm:h-[60%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden sm:block pointer-events-none" 
             />
             <img 
-              src="./assets/characters/linh_action_clean.png" 
+              src="./assets/characters/linh_front_clean.png" 
               alt="Linh" 
               className="absolute bottom-0 left-24 sm:left-32 h-[52%] sm:h-[62%] object-contain drop-shadow-[4px_4px_0px_#151C45] z-10 hidden md:block pointer-events-none" 
             />
