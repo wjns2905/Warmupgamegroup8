@@ -492,10 +492,9 @@ export const App: React.FC = () => {
                 </a>
               </div>
 
-              {/* Video Player & Reflection Container */}
-              <div className="my-auto py-2 grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                {/* 2 Cols: YouTube Embed */}
-                <div className="md:col-span-2 aspect-video w-full rounded-2xl border-3 border-[#151C45] overflow-hidden shadow-[4px_4px_0px_#151C45] bg-black">
+              {/* Video Player Cinema Container */}
+              <div className="my-auto py-2 flex flex-col items-center justify-center w-full max-w-4xl mx-auto">
+                <div className="aspect-video w-full rounded-2xl border-4 border-[#151C45] overflow-hidden shadow-[6px_6px_0px_#151C45] bg-black">
                   <iframe
                     src={VIDEO_DATA.embedUrl}
                     title="Video tình huống học tập thiếu kế hoạch"
@@ -503,19 +502,6 @@ export const App: React.FC = () => {
                     allowFullScreen
                     className="w-full h-full"
                   />
-                </div>
-
-                {/* 1 Col: Reflection Script from Document */}
-                <div className="p-3 sm:p-4 bg-[#FFFDF7] border-3 border-[#151C45] rounded-2xl shadow-[4px_4px_0px_#151C45] space-y-2 text-left">
-                  <span className="px-2.5 py-0.5 bg-[#FF8426] text-white border border-[#151C45] rounded-full text-[10px] font-black font-heading">
-                    LỜI DẪN DIỄN GIẢ (SAU VIDEO)
-                  </span>
-                  <p className="font-sans text-xs text-[#151C45] leading-relaxed">
-                    "{VIDEO_DATA.afterVideoReflection[0]}"
-                  </p>
-                  <p className="font-heading font-bold text-xs text-[#7965F2] leading-snug">
-                    "{VIDEO_DATA.afterVideoReflection[1]}"
-                  </p>
                 </div>
               </div>
 
@@ -586,11 +572,6 @@ export const App: React.FC = () => {
                     </button>
                   </div>
                 </div>
-
-                {/* Remark text */}
-                <p className="font-sans text-[11px] text-[#151C45]/80 italic">
-                  "{VIDEO_DATA.afterDiscussionRemark}"
-                </p>
 
                 <button
                   onClick={() => setCurrentScene('SMART_THEORY')}

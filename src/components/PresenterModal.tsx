@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GameScene } from '../types/game';
-import { SWOT_QUESTIONS, SMART_GAME_QUESTIONS, PRESENTER_FAQ, SMART_GOAL_FULL } from '../data/gameContent';
+import { SWOT_QUESTIONS, SMART_GAME_QUESTIONS, PRESENTER_FAQ, SMART_GOAL_FULL, VIDEO_DATA } from '../data/gameContent';
 import { X, ShieldCheck, HelpCircle, BookOpen, Clock, Award, CheckCircle2, ChevronRight } from 'lucide-react';
 
 interface PresenterModalProps {
@@ -69,7 +69,7 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
               activeTab === 'FAQ' ? 'bg-[#FFF4DF] -mb-[3px] border-b-0 text-[#151C45]' : 'bg-white text-[#151C45]/60 hover:text-[#151C45]'
             }`}
           >
-            💡 HƯỚNG DẪN THẢO LUẬN & FAQ
+            🎙️ LỜI DẪN DIỄN GIẢ & FAQ
           </button>
         </div>
 
@@ -195,6 +195,37 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
 
           {activeTab === 'FAQ' && (
             <div className="space-y-4">
+              {/* Speaker Notes */}
+              <div className="p-4 bg-[#FFFDF7] border-2 border-[#151C45] rounded-2xl shadow-[2px_2px_0px_#151C45] space-y-3">
+                <div className="flex items-center justify-between border-b-2 border-[#151C45]/20 pb-2">
+                  <span className="font-heading font-black text-xs text-[#FF8426] uppercase tracking-wider">
+                    🎙️ LỜI DẪN THUYẾT TRÌNH (CHỈ DIỄN GIẢ THẤY)
+                  </span>
+                  <span className="text-[10px] bg-[#FF8426] text-white font-bold px-2 py-0.5 rounded-full">
+                    Nói mồm - Không hiện trên màn hình
+                  </span>
+                </div>
+                
+                <div className="space-y-1.5 text-xs text-[#151C45]">
+                  <p className="font-heading font-bold text-[#7965F2] flex items-center gap-1.5">
+                    <span>1. Sau khi chiếu xong Video tình huống:</span>
+                  </p>
+                  <div className="p-2.5 bg-[#FFF4DF] rounded-xl border border-[#151C45] space-y-1 font-sans text-xs italic leading-relaxed">
+                    <p>"{VIDEO_DATA.afterVideoReflection[0]}"</p>
+                    <p className="font-bold text-[#151C45] mt-1">"{VIDEO_DATA.afterVideoReflection[1]}"</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 text-xs text-[#151C45]">
+                  <p className="font-heading font-bold text-[#7965F2] flex items-center gap-1.5">
+                    <span>2. Sau khi kết thúc 2 phút thảo luận nhóm:</span>
+                  </p>
+                  <div className="p-2.5 bg-[#FFF4DF] rounded-xl border border-[#151C45] font-sans text-xs italic leading-relaxed">
+                    <p>"{VIDEO_DATA.afterDiscussionRemark}"</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-4 bg-white border-2 border-[#151C45] rounded-2xl shadow-[2px_2px_0px_#151C45]">
                 <span className="font-heading font-black text-xs text-[#7965F2] uppercase tracking-wider block mb-1">
                   MỤC TIÊU SMART HOÀN CHỈNH (THEO ĐÚNG TÀI LIỆU):
