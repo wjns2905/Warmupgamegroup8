@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { GameScene } from './types/game';
 import { 
-  PROLOGUE_DIALOGUES, 
-  MEET_LINH_DIALOGUES, 
   SWOT_QUESTIONS, 
   SMART_PILLARS, 
   SMART_GOAL_FULL, 
-  FIVE_DAY_SCHEDULE 
+  FIVE_DAY_SCHEDULE,
+  PRESENTER_FAQ
 } from './data/gameContent';
-import { GameHeader } from './components/GameHeader';
-import { VNDialogueBox } from './components/VNDialogueBox';
-import { PresenterModal } from './components/PresenterModal';
 import confetti from 'canvas-confetti';
 import { 
   Play, 
-  HelpCircle, 
-  ShieldCheck, 
+  Settings, 
   CheckCircle2, 
   XCircle, 
   Sparkles, 
@@ -27,18 +22,38 @@ import {
   BookOpen,
   Check,
   CheckSquare,
-  Smartphone,
-  AlertTriangle
+  X,
+  ShieldCheck
 } from 'lucide-react';
 
+// Prologue dialogues matching the demo sample
+const SCENE_1_DIALOGUES = [
+  { id: '1', speaker: 'Bạn', text: 'Còn 6 ngày nữa!', btn: 'Bắt đầu' },
+  { id: '2', speaker: 'Minh', text: 'Tận 9 chương kiến thức cần ôn mà mình vẫn chưa bắt đầu được chương nào cả...', btn: 'Tiếp tục' },
+  { id: '3', speaker: 'Minh', text: 'Thôi, hôm nay nhất định phải ngồi vào bàn học nghiêm túc, không được trì hoãn nữa!', btn: 'Tiếp tục' },
+  { id: '4', speaker: 'Minh', text: '📱 [Ting!] Kênh yêu thích vừa ra video mới... Xem lướt 5 phút thôi chắc không sao đâu nhỉ?', btn: 'Tiếp tục' },
+  { id: '5', speaker: 'Minh', text: '⏳ Vài giờ sau... Đồng hồ điểm 23:30 đêm! Mình vẫn chưa đọc được trang nào!', btn: 'Tiếp tục' },
+  { id: '6', speaker: 'Hệ thống', text: '⚡ BẤT NGỜ MÀN HÌNH LAPTOP PHÁT SÁNG! CỔNG LEVEL UP MỞ RA...', btn: 'Gặp Linh & Tick ►' }
+];
+
+const SCENE_2_DIALOGUES = [
+  { id: 'm1', speaker: 'Linh', text: 'Chào Minh! Đừng hoảng hốt, cậu không hề cô đơn trên hành trình này đâu!', btn: 'Tiếp tục' },
+  { id: 'm2', speaker: 'Tick', text: 'Reng reng reng! Báo động đỏ cấp độ thi cử! Chỉ còn 6 ngày nữa thôi đấy!', btn: 'Tiếp tục' },
+  { id: 'm3', speaker: 'Minh', text: 'Hai người là ai vậy? Tôi đang lo sốt vó cho kỳ thi 9 chương đây!', btn: 'Tiếp tục' },
+  { id: 'm4', speaker: 'Linh', text: 'Để thoát khỏi vòng lặp trì hoãn, trước tiên cậu phải HIỂU RÕ BẢN THÂN bằng Ma trận SWOT!', btn: 'Tiếp tục' },
+  { id: 'm5', speaker: 'Linh', text: 'Hãy nhận diện: Strengths (Điểm mạnh), Weaknesses (Điểm yếu), Opportunities (Cơ hội), Threats (Thách thức).', btn: 'Tiếp tục' },
+  { id: 'm6', speaker: 'Tick', text: 'Hãy cùng cả lớp giải mã 8 câu hỏi thử thách tư duy SWOT ngay bây giờ nào!', btn: 'Vào 8 Câu SWOT ►' }
+];
+
 export const App: React.FC = () => {
-  const [currentScene, setCurrentScene] = useState<GameScene>('TITLE');
-  const [dialogueIndex, setDialogueIndex] = useState(0);
+  const [currentScene, setCurrentScene] = useState<GameScene>('PROLOGUE');
+  const [scene1Idx, setScene1Idx] = useState(0);
+  const [scene2Idx, setScene2Idx] = useState(0);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [xp, setXp] = useState(0);
-  const [checkedChapters, setCheckedChapters] = useState<number[]>([1]);
+  const [checkedChapters, setCheckedChapters] = useState<number[]>([]);
   
   // Timer for 2-minute discussion
   const [timerSeconds, setTimerSeconds] = useState(120);
@@ -46,8 +61,7 @@ export const App: React.FC = () => {
 
   // Presenter Modal
   const [isPresenterOpen, setIsPresenterOpen] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [presenterTab, setPresenterTab] = useState<'SCENES' | 'ANSWERS' | 'FAQ'>('SCENES');
 
   // Confetti trigger
   const triggerConfetti = () => {
@@ -65,13 +79,11 @@ export const App: React.FC = () => {
 
       if (e.key === 'p' || e.key === 'P') {
         setIsPresenterOpen(prev => !prev);
-      } else if (e.key === 'f' || e.key === 'F') {
-        toggleFullscreen();
       } else if (e.key === ' ' && !isPresenterOpen) {
         if (currentScene === 'PROLOGUE') {
-          handleNextPrologue();
+          handleNextScene1();
         } else if (currentScene === 'MEET_LINH') {
-          handleNextMeetLinh();
+          handleNextScene2();
         }
       } else if (['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'].includes(e.key) && currentScene === 'SWOT_QUIZ' && !isAnswerSubmitted) {
         handleSelectAnswer(e.key.toUpperCase());
@@ -80,7 +92,7 @@ export const App: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentScene, dialogueIndex, isAnswerSubmitted, isPresenterOpen]);
+  }, [currentScene, scene1Idx, scene2Idx, isAnswerSubmitted, isPresenterOpen]);
 
   // Timer interval
   useEffect(() => {
@@ -96,36 +108,19 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [isTimerRunning, timerSeconds]);
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      setIsFullscreen(true);
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-        setIsFullscreen(false);
-      }
-    }
-  };
-
-  // Navigation handlers
-  const handleStartGame = () => {
-    setCurrentScene('PROLOGUE');
-    setDialogueIndex(0);
-  };
-
-  const handleNextPrologue = () => {
-    if (dialogueIndex < PROLOGUE_DIALOGUES.length - 1) {
-      setDialogueIndex(prev => prev + 1);
+  // Scene navigation handlers
+  const handleNextScene1 = () => {
+    if (scene1Idx < SCENE_1_DIALOGUES.length - 1) {
+      setScene1Idx(prev => prev + 1);
     } else {
       setCurrentScene('MEET_LINH');
-      setDialogueIndex(0);
+      setScene2Idx(0);
     }
   };
 
-  const handleNextMeetLinh = () => {
-    if (dialogueIndex < MEET_LINH_DIALOGUES.length - 1) {
-      setDialogueIndex(prev => prev + 1);
+  const handleNextScene2 = () => {
+    if (scene2Idx < SCENE_2_DIALOGUES.length - 1) {
+      setScene2Idx(prev => prev + 1);
     } else {
       setCurrentScene('SWOT_QUIZ');
       setCurrentQuestionIdx(0);
@@ -157,12 +152,14 @@ export const App: React.FC = () => {
 
   const handleJumpToScene = (scene: GameScene, qIdx?: number) => {
     setCurrentScene(scene);
-    setDialogueIndex(0);
+    if (scene === 'PROLOGUE') setScene1Idx(0);
+    if (scene === 'MEET_LINH') setScene2Idx(0);
     if (qIdx !== undefined) {
       setCurrentQuestionIdx(qIdx);
       setSelectedAnswer(null);
       setIsAnswerSubmitted(false);
     }
+    setIsPresenterOpen(false);
   };
 
   const toggleChapter = (chNum: number) => {
@@ -172,291 +169,175 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex flex-col bg-cream text-navy select-none font-sans">
-      {/* Universal Top Header */}
-      <GameHeader
-        currentScene={currentScene}
-        xp={xp}
-        onOpenPresenter={() => setIsPresenterOpen(true)}
-        isFullscreen={isFullscreen}
-        onToggleFullscreen={toggleFullscreen}
-        isMuted={isMuted}
-        onToggleMute={() => setIsMuted(prev => !prev)}
-        chapterProgress={checkedChapters.length}
-      />
-
-      {/* Main Game Stage Area */}
-      <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col justify-between p-3 sm:p-5">
+    <div className="relative w-screen h-screen overflow-hidden flex items-center justify-center p-2 sm:p-6 bg-[#FFF4DF] select-none font-sans">
+      
+      {/* ================= EXACT DEMO FRAME (16:9 RATIO) ================= */}
+      <div className="relative w-full max-w-4xl aspect-[16/10] sm:aspect-video rounded-[28px] sm:rounded-[36px] border-4 sm:border-6 border-[#151C45] overflow-hidden bg-[#151C45] shadow-[8px_8px_0px_#151C45] flex flex-col justify-between">
         
-        {/* ================= SCENE 0: TITLE ================= */}
-        {currentScene === 'TITLE' && (
-          <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-between py-2 sm:py-4">
-            {/* Top Tagline */}
-            <div className="flex items-center justify-between border-b-2 border-navy/20 pb-2">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-yellow border-2 border-navy rounded-full font-heading font-black text-xs text-navy shadow-comic-sm">
-                  ★ PHIÊN BẢN TRÌNH CHIẾU LỚP HỌC 2.0
-                </span>
-                <span className="text-xs font-heading font-bold text-navy/70 hidden sm:inline">
-                  Western 2D Cartoon Style • SWOT & SMART Interactive Visual Novel
-                </span>
-              </div>
-              <span className="text-xs font-heading font-bold text-navy/60">
-                1920 × 1080 • Thời lượng: 15–20 phút
-              </span>
-            </div>
-
-            {/* Center Content: Two Columns */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
-              {/* Left Column: Title & CTAs */}
-              <div className="lg:col-span-6 space-y-4 text-left">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-mint/30 border-2 border-navy rounded-xl text-xs font-heading font-black text-navy shadow-comic-sm">
-                  <span>🎓 KHÁM PHÁ BẢN THÂN • THIẾT LẬP KẾ HOẠCH</span>
-                </div>
-
-                <h1 className="text-4xl sm:text-6xl md:text-7xl font-comic font-black text-navy leading-none tracking-tight">
-                  LEVEL <span className="text-orange underline decoration-purple decoration-wavy">UP!</span>
-                </h1>
-
-                <div className="p-4 bg-white border-3 border-navy rounded-2xl shadow-comic space-y-1">
-                  <h2 className="font-heading font-black text-lg sm:text-xl text-purple">
-                    SWOT & SMART: HIỂU BẢN THÂN – LÀM CHỦ MỤC TIÊU
-                  </h2>
-                  <p className="text-xs sm:text-sm font-sans text-navy/80 leading-relaxed">
-                    Đồng hành cùng nam sinh viên <b>Minh</b>, bạn hỗ trợ <b>Linh</b> và mascot <b>Tick</b> vượt qua 8 thử thách SWOT, phá vỡ thói quen trì hoãn và xây dựng mục tiêu SMART giải cứu kỳ thi 9 chương!
-                  </p>
-                </div>
-
-                {/* Main Action Buttons */}
-                <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <button
-                    onClick={handleStartGame}
-                    className="btn-comic px-6 sm:px-8 py-3.5 bg-orange hover:bg-orange-light text-white text-base sm:text-lg flex items-center gap-2"
-                  >
-                    <Play className="w-5 h-5 fill-current" />
-                    <span>BẮT ĐẦU CHƠI NGAY</span>
-                  </button>
-
-                  <button
-                    onClick={() => setIsPresenterOpen(true)}
-                    className="btn-comic px-5 py-3.5 bg-white hover:bg-cream-dark text-navy text-sm flex items-center gap-2"
-                  >
-                    <ShieldCheck className="w-5 h-5 text-purple" />
-                    <span>PRESENTER MODE [P]</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Column: Character Trio Showcase */}
-              <div className="lg:col-span-6 flex justify-center">
-                <div className="card-comic p-3 bg-white w-full max-w-lg aspect-video overflow-hidden relative group">
-                  <img 
-                    src="/assets/brand/character_sheet.jpg" 
-                    alt="Master Character Trio"
-                    className="w-full h-full object-cover rounded-xl border-2 border-navy"
-                  />
-                  <div className="absolute bottom-4 inset-x-4 p-2 bg-navy/90 text-white border-2 border-navy rounded-xl text-xs font-heading font-bold flex items-center justify-between">
-                    <span>Bộ ba: Minh (Mint) • Linh (Orange) • Tick (Purple)</span>
-                    <span className="text-yellow font-comic text-[10px]">100% CARTOON</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Keyboard Guide */}
-            <div className="border-t-2 border-navy/20 pt-2 flex flex-wrap items-center justify-between text-xs font-heading font-bold text-navy/60">
-              <div className="flex items-center gap-4">
-                <span>[Space] / Click: Tiếp tục</span>
-                <span>[A, B, C, D]: Trắc nghiệm</span>
-                <span>[P]: Menu Thuyết trình</span>
-                <span>[F]: Toàn màn hình</span>
-              </div>
-              <span className="text-orange">Bản quyền thiết kế Western 2D Cartoon © LEVEL UP!</span>
-            </div>
+        {/* Top HUD Bar (Exact Match: Controller Logo on left, Book Progress + Gear on right) */}
+        <div className="absolute top-2.5 sm:top-3.5 inset-x-3 sm:inset-x-5 flex items-center justify-between z-30 pointer-events-auto">
+          {/* Left: Logo Capsule */}
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:py-1.5 bg-[#151C45] text-white border-2 border-white/25 rounded-full text-xs sm:text-sm font-black font-heading shadow-[2px_2px_0px_rgba(0,0,0,0.4)]">
+            <span className="w-5 h-5 rounded-full bg-white text-[#151C45] flex items-center justify-center text-[10px]">🎮</span>
+            <span>LEVEL UP!</span>
+            <span className="text-[#FFD343] font-medium hidden sm:inline">• SWOT • SMART</span>
           </div>
-        )}
 
-        {/* ================= SCENE 1: PROLOGUE (MINH'S BEDROOM SCENE) ================= */}
+          {/* Right: Book 0/9 & Settings Gear */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-white border-2 border-[#151C45] rounded-full text-xs sm:text-sm font-black text-[#151C45] shadow-[2px_2px_0px_#151C45]">
+              <span>📖</span>
+              <span>{checkedChapters.length}/9</span>
+            </div>
+
+            <button
+              onClick={() => setIsPresenterOpen(true)}
+              title="Cài đặt & Chế độ thuyết trình (Phím P)"
+              className="p-1.5 sm:p-2 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-full text-[#151C45] shadow-[2px_2px_0px_#151C45] transition-all"
+            >
+              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* ================= SCENE 1: PROLOGUE (EXACT BEDROOM SCENE WITH BORED MINH) ================= */}
         {currentScene === 'PROLOGUE' && (
-          <div className="w-full h-full flex flex-col justify-between">
-            {/* Visual Novel Stage: Minh at study desk */}
-            <div className="relative flex-1 w-full max-w-4xl mx-auto my-auto flex items-center justify-center">
-              <div className="card-comic relative w-full h-[320px] sm:h-[400px] overflow-hidden bg-white border-4 border-navy shadow-comic-lg flex items-center justify-center">
-                {/* Background Artwork: Minh at his study desk */}
-                <img 
-                  src="/assets/characters/minh_scene_stage.png" 
-                  alt="Minh tại bàn học"
-                  className="w-full h-full object-cover"
-                />
-
-                {/* Day / Night ambient transition */}
-                {dialogueIndex >= 5 && (
-                  <div className="absolute inset-0 bg-navy/60 backdrop-blur-[0.5px] transition-all duration-700 flex items-center justify-center">
-                    <div className="p-3 bg-navy text-yellow border-2 border-yellow rounded-2xl shadow-comic font-heading font-black text-sm flex items-center gap-2 animate-bounce-gentle">
-                      <Clock className="w-5 h-5 text-orange animate-spin" />
-                      <span>ĐÃ 23:30 ĐÊM! SÁCH VẪN CHƯA MỞ!</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Top Corner HUD badges */}
-                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                  <div className="px-3 py-1 bg-coral text-white border-2 border-navy rounded-xl font-heading font-black text-xs shadow-comic-sm flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                    <span>EXAM: CÒN 6 NGÀY NỮA!</span>
-                  </div>
-                  <div className="px-3 py-1 bg-yellow text-navy border-2 border-navy rounded-xl font-heading font-black text-xs shadow-comic-sm">
-                    📚 9 CHƯƠNG CHƯA ÔN
-                  </div>
-                </div>
-
-                {/* Smartphone distraction pop-up */}
-                {dialogueIndex === 4 && (
-                  <div className="absolute top-1/3 right-6 p-3 bg-white border-3 border-navy rounded-2xl shadow-comic max-w-xs animate-bounce-gentle">
-                    <div className="flex items-center gap-2 text-xs font-heading font-black text-purple">
-                      <Smartphone className="w-4 h-4 text-orange" />
-                      <span>THÔNG BÁO VIDEO MỚI!</span>
-                    </div>
-                    <p className="text-[11px] font-sans text-navy/80 mt-1">
-                      "Xem lướt 5 phút thôi mà..."
-                    </p>
-                  </div>
-                )}
-              </div>
+          <div className="relative w-full h-full flex flex-col justify-between overflow-hidden">
+            {/* Background + Character Artwork: Minh at study desk (Cleaned, no ghost dialogue overlay) */}
+            <div className="absolute inset-0 w-full h-full">
+              <img 
+                src="/assets/scenes/scene_1_clean_desk.png" 
+                alt="Minh bored at home desk" 
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            {/* Visual Novel Dialogue Box with Minh's Avatar */}
-            <VNDialogueBox
-              speaker={PROLOGUE_DIALOGUES[dialogueIndex].speaker}
-              name={PROLOGUE_DIALOGUES[dialogueIndex].name}
-              subtext={PROLOGUE_DIALOGUES[dialogueIndex].subtext}
-              text={PROLOGUE_DIALOGUES[dialogueIndex].text}
-              onNext={handleNextPrologue}
-            />
+            {/* Bottom Live Visual Novel Dialogue Box (Exact Replica of Sample) */}
+            <div className="mt-auto z-20 px-3 sm:px-6 pb-3 sm:pb-5">
+              <div 
+                onClick={handleNextScene1}
+                className="relative bg-[#FFFDF7] border-3 sm:border-4 border-[#151C45] rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-[4px_4px_0px_#151C45] flex items-center justify-between cursor-pointer group hover:border-[#7965F2] transition-all"
+              >
+                {/* Speaker Tag on Top-Left */}
+                <div className="absolute -top-3.5 left-5 px-3 py-0.5 bg-[#252C58] text-white border-2 border-[#151C45] rounded-full text-xs font-black font-heading tracking-wide shadow-[1px_1px_0px_#151C45]">
+                  <span>{SCENE_1_DIALOGUES[scene1Idx].speaker}</span>
+                </div>
+
+                {/* Dialogue Text */}
+                <p className="font-heading font-black text-sm sm:text-lg md:text-xl text-[#151C45] pr-3 sm:pr-6 leading-snug">
+                  {SCENE_1_DIALOGUES[scene1Idx].text}
+                </p>
+
+                {/* Down Triangle Arrow */}
+                <span className="hidden sm:inline-block absolute bottom-2 right-28 sm:right-36 text-[#151C45] text-[11px] animate-bounce">
+                  ▼
+                </span>
+
+                {/* Right Action Button (Exact Replica of Sample Button) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextScene1();
+                  }}
+                  className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 sm:border-3 border-[#151C45] rounded-xl sm:rounded-2xl font-heading font-black text-xs sm:text-sm flex items-center gap-1.5 flex-shrink-0 shadow-[2px_2px_0px_#151C45] active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                >
+                  <span>► {SCENE_1_DIALOGUES[scene1Idx].btn}</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ================= SCENE 2: MEET LINH & TICK ================= */}
+        {/* ================= SCENE 2: MEET LINH & TICK (CLASSROOM / STRATEGY) ================= */}
         {currentScene === 'MEET_LINH' && (
-          <div className="w-full h-full flex flex-col justify-between">
-            {/* Stage: Linh, Tick and Minh in dialogue */}
-            <div className="relative flex-1 w-full max-w-4xl mx-auto my-auto flex items-center justify-center">
-              <div className="card-comic relative w-full h-[320px] sm:h-[400px] overflow-hidden bg-gradient-to-b from-cream to-white border-4 border-navy shadow-comic-lg flex items-end justify-around px-6 pb-2">
-                
-                {/* Left: Minh standing */}
-                <div className="flex flex-col items-center">
-                  <div className="h-60 sm:h-72 flex items-end">
-                    <img 
-                      src="/assets/characters/minh_standing.png" 
-                      alt="Minh" 
-                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
-                    />
-                  </div>
-                  <span className="px-3 py-0.5 bg-mint text-navy border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
-                    Minh
-                  </span>
-                </div>
+          <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#FFF4DF] to-white">
+            {/* Stage: Linh standing with checklist & Tick mascot */}
+            <div className="relative flex-1 w-full flex items-end justify-center pb-2 px-6">
+              <div className="h-[220px] sm:h-[300px] flex items-end">
+                <img 
+                  src="/assets/scenes/linh_tick_stage.png" 
+                  alt="Linh & Tick" 
+                  className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
+                />
+              </div>
 
-                {/* Center: Tick mascot */}
-                <div className="flex flex-col items-center animate-bounce-gentle">
-                  <div className="h-32 sm:h-40 flex items-end">
-                    <img 
-                      src="/assets/characters/tick_mascot.png" 
-                      alt="Tick" 
-                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
-                    />
-                  </div>
-                  <span className="px-3 py-0.5 bg-purple text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
-                    Tick
-                  </span>
-                </div>
-
-                {/* Right: Linh standing */}
-                <div className="flex flex-col items-center">
-                  <div className="h-60 sm:h-72 flex items-end">
-                    <img 
-                      src="/assets/characters/linh_standing.png" 
-                      alt="Linh" 
-                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
-                    />
-                  </div>
-                  <span className="px-3 py-0.5 bg-orange text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
-                    Linh
-                  </span>
-                </div>
-
-                {/* Floating SWOT quadrant preview */}
-                <div className="absolute top-4 inset-x-6 flex justify-between items-center pointer-events-none">
-                  <div className="px-3 py-1 bg-white border-2 border-navy rounded-xl text-xs font-heading font-black text-purple shadow-comic-sm">
-                    CHƯƠNG 01: MA TRẬN SWOT
-                  </div>
-                  <div className="flex gap-1.5">
-                    <span className="px-2 py-0.5 bg-mint border border-navy rounded font-black text-xs">S</span>
-                    <span className="px-2 py-0.5 bg-coral border border-navy rounded font-black text-xs text-white">W</span>
-                    <span className="px-2 py-0.5 bg-yellow border border-navy rounded font-black text-xs">O</span>
-                    <span className="px-2 py-0.5 bg-purple border border-navy rounded font-black text-xs text-white">T</span>
-                  </div>
-                </div>
+              {/* SWOT Mini Badges in background */}
+              <div className="absolute top-14 left-6 flex gap-1.5">
+                <span className="px-2.5 py-1 bg-[#55C7AA] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">S - Strengths</span>
+                <span className="px-2.5 py-1 bg-[#F47E93] text-white border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">W - Weaknesses</span>
+                <span className="px-2.5 py-1 bg-[#FFD343] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">O - Opportunities</span>
+                <span className="px-2.5 py-1 bg-[#7965F2] text-white border-2 border-[#151C45] rounded-xl font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">T - Threats</span>
               </div>
             </div>
 
-            {/* Visual Novel Dialogue Box with Speaking Character Avatar */}
-            <VNDialogueBox
-              speaker={MEET_LINH_DIALOGUES[dialogueIndex].speaker}
-              name={MEET_LINH_DIALOGUES[dialogueIndex].name}
-              subtext={MEET_LINH_DIALOGUES[dialogueIndex].subtext}
-              text={MEET_LINH_DIALOGUES[dialogueIndex].text}
-              onNext={handleNextMeetLinh}
-            />
+            {/* Bottom Dialogue Box */}
+            <div className="mt-auto z-20 px-3 sm:px-6 pb-3 sm:pb-5">
+              <div 
+                onClick={handleNextScene2}
+                className="relative bg-[#FFFDF7] border-3 sm:border-4 border-[#151C45] rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-[4px_4px_0px_#151C45] flex items-center justify-between cursor-pointer group hover:border-[#7965F2] transition-all"
+              >
+                <div className={`absolute -top-3.5 left-5 px-3 py-0.5 rounded-full text-xs font-black font-heading tracking-wide border-2 border-[#151C45] ${
+                  SCENE_2_DIALOGUES[scene2Idx].speaker === 'Linh' ? 'bg-[#FF8426] text-white' :
+                  SCENE_2_DIALOGUES[scene2Idx].speaker === 'Tick' ? 'bg-[#7965F2] text-white' : 'bg-[#55C7AA] text-[#151C45]'
+                }`}>
+                  <span>{SCENE_2_DIALOGUES[scene2Idx].speaker}</span>
+                </div>
+
+                <p className="font-heading font-black text-sm sm:text-lg md:text-xl text-[#151C45] pr-3 sm:pr-6 leading-snug">
+                  {SCENE_2_DIALOGUES[scene2Idx].text}
+                </p>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextScene2();
+                  }}
+                  className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 sm:border-3 border-[#151C45] rounded-xl sm:rounded-2xl font-heading font-black text-xs sm:text-sm flex items-center gap-1.5 flex-shrink-0 shadow-[2px_2px_0px_#151C45]"
+                >
+                  <span>► {SCENE_2_DIALOGUES[scene2Idx].btn}</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ================= SCENE 3: SWOT QUIZ ================= */}
+        {/* ================= SCENE 3: SWOT QUIZ (8 QUESTIONS) ================= */}
         {currentScene === 'SWOT_QUIZ' && (
-          <div className="w-full h-full max-w-4xl mx-auto flex flex-col justify-between py-2">
-            {/* Question Progress Bar */}
-            <div className="flex items-center justify-between bg-white px-4 py-2 border-2 border-navy rounded-2xl shadow-comic-sm">
-              <span className="font-heading font-black text-xs text-purple">
-                CÂU HỎI {currentQuestionIdx + 1} / {SWOT_QUESTIONS.length}
+          <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-6 bg-[#FFFDF7] overflow-y-auto">
+            {/* Top Indicator */}
+            <div className="mt-8 flex items-center justify-between border-b-2 border-[#151C45]/20 pb-2">
+              <span className="font-heading font-black text-xs sm:text-sm text-[#7965F2]">
+                CÂU HỎI {currentQuestionIdx + 1} / {SWOT_QUESTIONS.length}: {SWOT_QUESTIONS[currentQuestionIdx].title}
               </span>
-              <div className="flex gap-1.5">
+              <div className="flex gap-1">
                 {SWOT_QUESTIONS.map((_, i) => (
                   <div
                     key={i}
-                    className={`w-6 h-2.5 rounded-full border border-navy ${
-                      i < currentQuestionIdx ? 'bg-mint' : i === currentQuestionIdx ? 'bg-orange animate-pulse' : 'bg-cream-dark'
+                    className={`w-5 h-2 rounded-full border border-[#151C45] ${
+                      i < currentQuestionIdx ? 'bg-[#55C7AA]' : i === currentQuestionIdx ? 'bg-[#FF8426] animate-pulse' : 'bg-gray-200'
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-xs font-heading font-bold text-navy/70">
-                +100 XP khi đúng
-              </span>
             </div>
 
-            {/* Question Card */}
-            <div className="card-comic p-5 sm:p-6 bg-white my-auto space-y-4">
-              <div className="inline-block px-3 py-1 bg-yellow border-2 border-navy rounded-xl font-heading font-black text-xs text-navy shadow-comic-sm">
-                {SWOT_QUESTIONS[currentQuestionIdx].title}
-              </div>
-
-              <h3 className="text-base sm:text-xl font-heading font-bold text-navy leading-relaxed">
+            {/* Question Text */}
+            <div className="my-auto py-2 space-y-3">
+              <h3 className="font-heading font-black text-base sm:text-lg text-[#151C45] leading-snug">
                 {SWOT_QUESTIONS[currentQuestionIdx].question}
               </h3>
 
               {/* 4 Options Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {SWOT_QUESTIONS[currentQuestionIdx].options.map((opt) => {
                   const isSelected = selectedAnswer === opt.key;
                   const isCorrect = opt.key === SWOT_QUESTIONS[currentQuestionIdx].correctKey;
                   
-                  let btnColor = "bg-white hover:bg-cream border-navy text-navy";
+                  let btnColor = "bg-white hover:bg-[#FFF4DF] border-[#151C45] text-[#151C45]";
                   if (isAnswerSubmitted) {
-                    if (isCorrect) btnColor = "bg-mint text-navy border-navy font-black";
-                    else if (isSelected) btnColor = "bg-coral text-white border-navy";
-                    else btnColor = "bg-white/60 border-navy/40 text-navy/40";
-                  } else if (isSelected) {
-                    btnColor = "bg-purple text-white border-navy";
+                    if (isCorrect) btnColor = "bg-[#55C7AA] text-[#151C45] font-black";
+                    else if (isSelected) btnColor = "bg-[#F47E93] text-white";
+                    else btnColor = "bg-white/50 text-[#151C45]/40";
                   }
 
                   return (
@@ -464,14 +345,12 @@ export const App: React.FC = () => {
                       key={opt.key}
                       disabled={isAnswerSubmitted}
                       onClick={() => handleSelectAnswer(opt.key)}
-                      className={`p-3.5 border-3 rounded-2xl shadow-comic-sm text-left flex items-start gap-3 transition-all ${btnColor} ${
-                        !isAnswerSubmitted ? 'active:translate-x-0.5 active:translate-y-0.5' : ''
-                      }`}
+                      className={`p-2.5 sm:p-3 border-2 sm:border-3 rounded-xl sm:rounded-2xl shadow-[2px_2px_0px_#151C45] text-left flex items-start gap-2.5 transition-all ${btnColor}`}
                     >
-                      <span className="w-7 h-7 flex-shrink-0 flex items-center justify-center border-2 border-navy rounded-xl bg-white text-navy font-heading font-black text-xs shadow-comic-sm">
+                      <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center border-2 border-[#151C45] rounded-lg bg-white text-[#151C45] font-heading font-black text-xs">
                         {opt.key}
                       </span>
-                      <span className="text-xs sm:text-sm font-heading font-bold leading-snug">
+                      <span className="text-xs sm:text-sm font-heading font-bold leading-tight">
                         {opt.text}
                       </span>
                     </button>
@@ -479,44 +358,35 @@ export const App: React.FC = () => {
                 })}
               </div>
 
-              {/* Explanation Banner */}
+              {/* Feedback Alert */}
               {isAnswerSubmitted && (
-                <div className={`p-4 rounded-2xl border-2 border-navy text-xs sm:text-sm font-heading font-bold animate-fadeIn ${
+                <div className={`p-3 rounded-xl border-2 border-[#151C45] text-xs font-heading font-bold ${
                   selectedAnswer === SWOT_QUESTIONS[currentQuestionIdx].correctKey 
-                    ? 'bg-mint/20 text-navy' 
-                    : 'bg-coral/20 text-navy'
+                    ? 'bg-[#55C7AA]/25 text-[#151C45]' 
+                    : 'bg-[#F47E93]/25 text-[#151C45]'
                 }`}>
-                  <div className="flex items-center gap-2 font-black mb-1">
-                    {selectedAnswer === SWOT_QUESTIONS[currentQuestionIdx].correctKey ? (
-                      <span className="text-mint-dark flex items-center gap-1">
-                        <CheckCircle2 className="w-4 h-4" /> CHÍNH XÁC! (+100 XP)
-                      </span>
-                    ) : (
-                      <span className="text-coral-dark flex items-center gap-1">
-                        <XCircle className="w-4 h-4" /> CHƯA CHÍNH XÁC!
-                      </span>
-                    )}
-                    <span>Đáp án đúng là: <b>{SWOT_QUESTIONS[currentQuestionIdx].correctKey}</b></span>
+                  <div className="font-black mb-0.5">
+                    {selectedAnswer === SWOT_QUESTIONS[currentQuestionIdx].correctKey ? '🎉 CHÍNH XÁC! (+100 XP)' : '❌ CHƯA CHÍNH XÁC!'}
+                    <span className="ml-2 font-normal">Đáp án đúng là: <b>{SWOT_QUESTIONS[currentQuestionIdx].correctKey}</b></span>
                   </div>
-                  <p className="font-sans text-xs text-navy/80">{SWOT_QUESTIONS[currentQuestionIdx].explanation}</p>
+                  <p className="font-sans text-[11px] text-[#151C45]/85">{SWOT_QUESTIONS[currentQuestionIdx].explanation}</p>
                 </div>
               )}
             </div>
 
             {/* Bottom Next Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-1">
               {isAnswerSubmitted ? (
                 <button
                   onClick={handleNextQuestion}
-                  className="btn-comic px-6 py-3 bg-orange hover:bg-orange-light text-white text-sm flex items-center gap-2"
+                  className="px-5 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45]"
                 >
-                  <span>{currentQuestionIdx < SWOT_QUESTIONS.length - 1 ? 'CÂU TIẾP THEO' : 'XEM KẾT QUẢ SWOT'}</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <span>{currentQuestionIdx < SWOT_QUESTIONS.length - 1 ? 'CÂU TIẾP THEO ►' : 'HOÀN THÀNH SWOT ►'}</span>
                 </button>
               ) : (
-                <div className="text-xs font-heading font-bold text-navy/60 self-center">
-                  Chọn 1 trong 4 đáp án trên (hoặc phím A, B, C, D)
-                </div>
+                <span className="text-[11px] font-heading font-bold text-[#151C45]/60 self-center">
+                  Bấm phím A, B, C, D hoặc click chọn đáp án
+                </span>
               )}
             </div>
           </div>
@@ -524,379 +394,319 @@ export const App: React.FC = () => {
 
         {/* ================= SCENE 4: SWOT COMPLETE ================= */}
         {currentScene === 'SWOT_COMPLETE' && (
-          <div className="w-full h-full max-w-3xl mx-auto flex flex-col justify-between my-auto text-center py-6">
-            <div className="card-comic p-8 bg-white my-auto space-y-5">
-              <div className="w-24 h-24 mx-auto rounded-full bg-yellow border-3 border-navy flex items-center justify-center shadow-comic">
-                <Award className="w-12 h-12 text-orange" />
+          <div className="relative w-full h-full flex flex-col justify-between p-6 bg-[#FFFDF7] text-center my-auto">
+            <div className="my-auto space-y-4 max-w-lg mx-auto">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-3 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45]">
+                <Award className="w-10 h-10 text-[#FF8426]" />
               </div>
 
               <div>
-                <span className="px-3 py-1 bg-mint border-2 border-navy rounded-full font-heading font-black text-xs text-navy shadow-comic-sm">
+                <span className="px-3 py-1 bg-[#55C7AA] text-[#151C45] border-2 border-[#151C45] rounded-full text-xs font-black font-heading">
                   CHƯƠNG 01 HOÀN TẤT
                 </span>
-                <h2 className="text-2xl sm:text-4xl font-comic font-black text-navy mt-2">
-                  BẠN ĐÃ MỞ KHÓA: SWOT EXPLORER!
+                <h2 className="text-xl sm:text-3xl font-comic font-black text-[#151C45] mt-1">
+                  MỞ KHÓA: SWOT EXPLORER!
                 </h2>
-                <p className="text-xs sm:text-sm font-sans text-navy/70 max-w-md mx-auto mt-1">
-                  Chúc mừng bạn đã hiểu rõ 4 yếu tố ma trận: Điểm mạnh (S), Điểm yếu (W), Cơ hội (O) và Thách thức (T)!
+                <p className="text-xs text-[#151C45]/70 font-sans mt-1">
+                  Đã nhận diện đủ 4 yếu tố ma trận: Strengths, Weaknesses, Opportunities, Threats.
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
-                <div className="p-3 bg-mint/20 border-2 border-navy rounded-xl text-xs font-heading font-bold">
-                  💪 Strengths: Ngoại ngữ, tiềm năng
-                </div>
-                <div className="p-3 bg-coral/20 border-2 border-navy rounded-xl text-xs font-heading font-bold">
-                  🔗 Weaknesses: Trì hoãn 5 phút
-                </div>
-                <div className="p-3 bg-yellow/20 border-2 border-navy rounded-xl text-xs font-heading font-bold">
-                  🎯 Opportunities: Ngày hội, bạn bè
-                </div>
-                <div className="p-3 bg-purple/20 border-2 border-navy rounded-xl text-xs font-heading font-bold">
-                  ⚠️ Threats: Đối thủ & Deadline 6 ngày
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <button
-                  onClick={() => setCurrentScene('SMART_VIDEO')}
-                  className="btn-comic px-8 py-3.5 bg-orange hover:bg-orange-light text-white text-base flex items-center gap-2 mx-auto"
-                >
-                  <span>MỞ KHÓA CHƯƠNG 02: SMART</span>
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ================= SCENE 5: SMART VIDEO ================= */}
-        {currentScene === 'SMART_VIDEO' && (
-          <div className="w-full h-full max-w-4xl mx-auto flex flex-col justify-between py-2">
-            <div className="border-b-2 border-navy/20 pb-2 flex items-center justify-between">
-              <span className="font-heading font-black text-sm text-purple">
-                🎬 TÌNH HUỐNG THỰC TẾ: VÒNG LẶP TRÌ HOÃN (6 DAYS → 1 DAY)
-              </span>
-              <a
-                href="https://www.youtube.com/watch?v=uHRSBmStC5g"
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs font-heading font-bold text-orange hover:underline flex items-center gap-1"
-              >
-                <span>Xem trên YouTube</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
-
-            {/* Video Player Embed Card */}
-            <div className="card-comic p-3 bg-white my-auto">
-              <div className="aspect-video w-full rounded-xl overflow-hidden border-2 border-navy relative">
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/uHRSBmStC5g?autoplay=0&rel=0"
-                  title="Study Procrastination Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-              <p className="text-xs text-navy/70 font-sans mt-2 text-center">
-                *Nếu video không tải được do kết nối mạng, người thuyết trình có thể tóm tắt: Nhân vật có 6 ngày cho 9 chương nhưng liên tục mất kiểm soát vì lướt điện thoại "thêm 5 phút".
-              </p>
-            </div>
-
-            <div className="flex justify-between items-center pt-2">
-              <span className="text-xs font-heading font-bold text-navy/60">
-                Quan sát hành vi của nhân vật trước kỳ thi
-              </span>
               <button
-                onClick={() => {
-                  setCurrentScene('SMART_DISCUSSION');
-                  setTimerSeconds(120);
-                  setIsTimerRunning(false);
-                }}
-                className="btn-comic px-6 py-3 bg-orange hover:bg-orange-light text-white text-xs sm:text-sm flex items-center gap-2"
+                onClick={() => setCurrentScene('SMART_DISCUSSION')}
+                className="px-6 py-3 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-3 border-[#151C45] rounded-2xl font-heading font-black text-sm shadow-[3px_3px_0px_#151C45]"
               >
-                <span>VÀO THỬ THÁCH THẢO LUẬN 2 PHÚT</span>
-                <ChevronRight className="w-4 h-4" />
+                SANG CHƯƠNG 02: SMART ►
               </button>
             </div>
           </div>
         )}
 
-        {/* ================= SCENE 6: SMART DISCUSSION ================= */}
+        {/* ================= SCENE 5: SMART DISCUSSION (2 MINUTES) ================= */}
         {currentScene === 'SMART_DISCUSSION' && (
-          <div className="w-full h-full max-w-4xl mx-auto flex flex-col justify-between py-2 my-auto">
-            <div className="card-comic p-6 sm:p-8 bg-white my-auto text-center space-y-6">
-              <div className="inline-block px-4 py-1.5 bg-orange text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm">
-                ⏳ THỬ THÁCH TƯ DUY TẬP THỂ
+          <div className="relative w-full h-full flex flex-col justify-between p-6 bg-[#FFFDF7] text-center my-auto">
+            <div className="my-auto space-y-4 max-w-lg mx-auto mt-6">
+              <div className="inline-block px-3 py-1 bg-[#FF8426] text-white border-2 border-[#151C45] rounded-full font-heading font-black text-xs shadow-[2px_2px_0px_#151C45]">
+                ⏳ THỬ THÁCH THẢO LUẬN 2 PHÚT
               </div>
 
-              <h2 className="text-xl sm:text-3xl font-heading font-black text-navy max-w-2xl mx-auto leading-snug">
-                "Trong 2 phút, hãy giúp nhân vật xây dựng một kế hoạch để THỰC SỰ BẮT ĐẦU thay vì tiếp tục trì hoãn?"
-              </h2>
+              <h3 className="font-heading font-black text-base sm:text-xl text-[#151C45] leading-snug">
+                "Hãy giúp nhân vật xây dựng một kế hoạch để THỰC SỰ BẮT ĐẦU thay vì tiếp tục trì hoãn?"
+              </h3>
 
-              {/* Timer Box with Tick Avatar */}
-              <div className="p-6 bg-cream border-3 border-navy rounded-3xl shadow-comic max-w-md mx-auto flex flex-col sm:flex-row items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-white border-2 border-navy overflow-hidden p-1 shadow-comic-sm flex-shrink-0 animate-bounce-gentle">
-                  <img src="/assets/characters/tick_avatar.png" alt="Tick" className="w-full h-full object-cover" />
+              {/* Timer Display */}
+              <div className="p-4 bg-[#FFF4DF] border-3 border-[#151C45] rounded-3xl shadow-[4px_4px_0px_#151C45] flex items-center justify-center gap-4 max-w-xs mx-auto">
+                <div className="flex items-center gap-2 font-comic text-4xl sm:text-5xl text-[#151C45]">
+                  <Clock className={`w-8 h-8 ${isTimerRunning ? 'text-[#FF8426] animate-spin' : 'text-[#7965F2]'}`} />
+                  <span>
+                    {Math.floor(timerSeconds / 60).toString().padStart(2, '0')}:
+                    {(timerSeconds % 60).toString().padStart(2, '0')}
+                  </span>
                 </div>
 
-                <div className="flex-1 flex flex-col items-center sm:items-start gap-2">
-                  <div className="flex items-center gap-2 font-comic text-4xl sm:text-5xl text-navy">
-                    <Clock className={`w-8 h-8 ${isTimerRunning ? 'text-orange animate-spin' : 'text-purple'}`} />
-                    <span>
-                      {Math.floor(timerSeconds / 60).toString().padStart(2, '0')}:
-                      {(timerSeconds % 60).toString().padStart(2, '0')}
-                    </span>
-                  </div>
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => setIsTimerRunning(prev => !prev)}
+                    className="px-3 py-1 bg-[#55C7AA] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs"
+                  >
+                    {isTimerRunning ? 'Dừng' : 'Bắt đầu'}
+                  </button>
+                  <button
+                    onClick={() => { setIsTimerRunning(false); setTimerSeconds(120); }}
+                    className="p-1 bg-white border border-[#151C45] rounded-lg text-xs"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 mx-auto" />
+                  </button>
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentScene('SMART_KEYS')}
+                className="px-6 py-2.5 bg-[#7965F2] hover:bg-[#6853E8] text-white border-3 border-[#151C45] rounded-2xl font-heading font-black text-xs sm:text-sm shadow-[3px_3px_0px_#151C45]"
+              >
+                KHÁM PHÁ 5 CHÌA KHÓA SMART ►
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ================= SCENE 6: SMART KEYS & 5-DAY PLAN ================= */}
+        {currentScene === 'SMART_KEYS' && (
+          <div className="relative w-full h-full flex flex-col justify-between p-4 sm:p-5 bg-[#FFFDF7] overflow-y-auto">
+            <div className="mt-8 border-b-2 border-[#151C45]/20 pb-2 flex items-center justify-between">
+              <span className="font-heading font-black text-xs sm:text-sm text-[#FF8426]">
+                5 TRỤ CỘT SMART & KẾ HOẠCH HÀNH ĐỘNG 5 NGÀY
+              </span>
+              <span className="text-[11px] font-bold text-[#151C45]/70">
+                Ôn 9 chương trước 22:00
+              </span>
+            </div>
+
+            {/* 5 Pillars Row */}
+            <div className="grid grid-cols-5 gap-1.5 sm:gap-2 my-auto pt-2">
+              {SMART_PILLARS.map((p) => (
+                <div key={p.letter} className="p-2 sm:p-2.5 bg-white border-2 border-[#151C45] rounded-xl sm:rounded-2xl shadow-[2px_2px_0px_#151C45] flex flex-col justify-between">
+                  <div>
+                    <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#151C45] text-white flex items-center justify-center font-comic font-black text-xs mb-1">
+                      {p.letter}
+                    </span>
+                    <h5 className="font-heading font-black text-[11px] sm:text-xs text-[#151C45]">{p.nameVi}</h5>
+                    <p className="font-sans text-[10px] text-[#151C45]/80 mt-1 line-clamp-3">{p.application}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Target & 9 Chapters Checklist */}
+            <div className="p-3 bg-[#FFF4DF] border-2 border-[#151C45] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
+              <div className="text-left">
+                <span className="font-heading font-black text-[11px] text-[#FF8426] block">MỤC TIÊU SMART HOÀN CHỈNH:</span>
+                <p className="font-heading font-bold text-xs text-[#151C45] leading-snug">
+                  "Trong 5 ngày tới, hoàn thành 9 chương bằng cách học tối thiểu 2 chương/ngày và tích hoàn thành trước 22:00 ngày trước thi."
+                </p>
+              </div>
+
+              {/* Checklist mini */}
+              <div className="flex gap-1 flex-shrink-0">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((ch) => {
+                  const isChecked = checkedChapters.includes(ch);
+                  return (
                     <button
-                      onClick={() => setIsTimerRunning(prev => !prev)}
-                      className={`btn-comic px-4 py-1.5 text-xs text-white ${
-                        isTimerRunning ? 'bg-coral' : 'bg-mint text-navy'
+                      key={ch}
+                      onClick={() => toggleChapter(ch)}
+                      className={`w-6 h-6 rounded border border-[#151C45] font-heading font-black text-[10px] flex items-center justify-center ${
+                        isChecked ? 'bg-[#55C7AA] text-[#151C45]' : 'bg-white text-gray-400'
                       }`}
                     >
-                      {isTimerRunning ? 'TẠM DỪNG' : 'BẮT ĐẦU'}
+                      {ch}
                     </button>
-                    <button
-                      onClick={() => {
-                        setIsTimerRunning(false);
-                        setTimerSeconds(120);
-                      }}
-                      className="p-1.5 bg-white border-2 border-navy rounded-xl shadow-comic-sm hover:bg-cream"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5 text-navy" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-xs font-sans text-navy/70 max-w-md mx-auto">
-                Cả lớp hãy đưa ra các giải pháp: Loại bỏ điện thoại? Chia nhỏ chương? Đặt deadline cụ thể?
-              </p>
-
-              <div className="pt-2">
-                <button
-                  onClick={() => setCurrentScene('SMART_KEYS')}
-                  className="btn-comic px-6 sm:px-8 py-3 bg-purple hover:bg-purple-light text-white text-sm flex items-center gap-2 mx-auto"
-                >
-                  <span>GIẢI MÃ BÍ QUYẾT: 5 CHÌA KHÓA SMART</span>
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ================= SCENE 7: SMART KEYS ================= */}
-        {currentScene === 'SMART_KEYS' && (
-          <div className="w-full h-full max-w-5xl mx-auto flex flex-col justify-between py-2">
-            <div className="text-center space-y-1">
-              <span className="px-3 py-1 bg-yellow border-2 border-navy rounded-full font-heading font-black text-xs text-navy shadow-comic-sm">
-                CÔNG THỨC THÀNH CÔNG
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-comic font-black text-navy">
-                5 TRỤ CỘT MỤC TIÊU S - M - A - R - T
-              </h2>
-            </div>
-
-            {/* 5 Pillars Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 my-auto">
-              {SMART_PILLARS.map((pillar) => {
-                const getPillarColor = () => {
-                  switch (pillar.letter) {
-                    case 'S': return 'bg-purple/15 border-purple';
-                    case 'M': return 'bg-orange/15 border-orange';
-                    case 'A': return 'bg-mint/20 border-mint';
-                    case 'R': return 'bg-yellow/20 border-yellow';
-                    case 'T': return 'bg-coral/20 border-coral';
-                  }
-                };
-
-                return (
-                  <div key={pillar.letter} className={`card-comic p-4 bg-white flex flex-col justify-between ${getPillarColor()}`}>
-                    <div className="space-y-2">
-                      <div className="w-10 h-10 rounded-2xl bg-white border-2 border-navy flex items-center justify-center font-comic text-xl font-black text-navy shadow-comic-sm">
-                        {pillar.letter}
-                      </div>
-                      <h4 className="font-heading font-black text-sm text-navy">
-                        {pillar.nameVi}
-                        <span className="block text-[10px] text-navy/60 font-sans font-normal">{pillar.nameEn}</span>
-                      </h4>
-                      <p className="text-[11px] font-sans text-navy/80 leading-snug">
-                        {pillar.application}
-                      </p>
-                    </div>
-
-                    <div className="mt-3 pt-2 border-t border-navy/20 text-[10px] font-heading font-bold text-navy/60">
-                      ✔ {pillar.detailPoints[0]}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex justify-between items-center pt-2">
-              <span className="text-xs font-heading font-bold text-navy/60">
-                Bấm tiếp theo để xem mục tiêu hoàn chỉnh & Lịch 5 ngày
-              </span>
-              <button
-                onClick={() => setCurrentScene('SMART_PLAN')}
-                className="btn-comic px-6 py-3 bg-orange hover:bg-orange-light text-white text-xs sm:text-sm flex items-center gap-2"
-              >
-                <span>XEM KẾ HOẠCH HÀNH ĐỘNG 5 NGÀY</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ================= SCENE 8: SMART PLAN ================= */}
-        {currentScene === 'SMART_PLAN' && (
-          <div className="w-full h-full max-w-4xl mx-auto flex flex-col justify-between py-2">
-            {/* Top Target Sentence */}
-            <div className="card-comic p-4 bg-yellow">
-              <span className="font-heading font-black text-xs text-orange uppercase tracking-wider block mb-1">
-                🎯 MỤC TIÊU SMART HOÀN CHỈNH:
-              </span>
-              <p className="text-xs sm:text-sm font-heading font-bold text-navy leading-relaxed">
-                "{SMART_GOAL_FULL}"
-              </p>
-            </div>
-
-            {/* Middle: 5-Day Schedule & 9-Chapter Interactive Checklist */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-auto">
-              {/* 5-Day Schedule */}
-              <div className="md:col-span-7 card-comic p-4 bg-white space-y-2">
-                <h4 className="font-heading font-black text-xs text-purple flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" />
-                  <span>LỘ TRÌNH 5 NGÀY (2-2-2-2-1 CHƯƠNG)</span>
-                </h4>
-                <div className="space-y-1.5">
-                  {FIVE_DAY_SCHEDULE.map((item) => (
-                    <div key={item.day} className="p-2.5 bg-cream/60 border border-navy rounded-xl flex items-center justify-between text-xs">
-                      <div>
-                        <span className="font-heading font-black text-navy mr-2">{item.title}:</span>
-                        <span className="font-bold text-orange">{item.chapters}</span>
-                      </div>
-                      <span className="text-[10px] text-navy/60 font-sans">{item.note}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 9 Chapters Checklist */}
-              <div className="md:col-span-5 card-comic p-4 bg-white space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-heading font-black text-xs text-mint-dark flex items-center gap-1.5">
-                    <CheckSquare className="w-4 h-4" />
-                    <span>CHECKLIST 9 CHƯƠNG</span>
-                  </h4>
-                  <span className="text-xs font-black text-navy">{checkedChapters.length}/9</span>
-                </div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((ch) => {
-                    const isChecked = checkedChapters.includes(ch);
-                    return (
-                      <button
-                        key={ch}
-                        onClick={() => toggleChapter(ch)}
-                        className={`p-2 rounded-xl border-2 border-navy text-xs font-heading font-black flex items-center justify-center gap-1 transition-all ${
-                          isChecked ? 'bg-mint text-navy shadow-comic-sm' : 'bg-cream text-navy/40'
-                        }`}
-                      >
-                        {isChecked && <Check className="w-3.5 h-3.5" />}
-                        <span>Ch.{ch}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-[10px] text-navy/60 text-center font-sans">
-                  Click vào các ô để đánh dấu hoàn thành chương!
-                </p>
+                  );
+                })}
               </div>
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex justify-between items-center pt-2">
-              <span className="text-xs font-heading font-bold text-navy/60">
-                Chốt mốc trước 22:00 ngày trước kỳ thi!
-              </span>
+            <div className="flex justify-end pt-2">
               <button
                 onClick={() => {
                   setCurrentScene('VICTORY');
                   triggerConfetti();
                 }}
-                className="btn-comic px-8 py-3.5 bg-orange hover:bg-orange-light text-white text-sm sm:text-base flex items-center gap-2"
+                className="px-6 py-2 bg-[#FFAA2B] hover:bg-[#FF9B0F] text-[#151C45] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs sm:text-sm shadow-[2px_2px_0px_#151C45]"
               >
-                <Sparkles className="w-5 h-5 fill-current" />
-                <span>CHINH PHỤC KỲ THI & LEVEL UP!</span>
+                HOÀN THÀNH & CHIẾN THẮNG ►
               </button>
             </div>
           </div>
         )}
 
-        {/* ================= SCENE 9: VICTORY ================= */}
+        {/* ================= SCENE 7: VICTORY ================= */}
         {currentScene === 'VICTORY' && (
-          <div className="w-full h-full max-w-3xl mx-auto flex flex-col justify-between my-auto text-center py-6">
-            <div className="card-comic p-8 bg-white my-auto space-y-6">
-              <div className="w-24 h-24 mx-auto rounded-full bg-yellow border-4 border-navy flex items-center justify-center shadow-comic-lg animate-bounce-gentle">
-                <Award className="w-14 h-14 text-orange" />
+          <div className="relative w-full h-full flex flex-col justify-between p-6 bg-[#FFFDF7] text-center my-auto">
+            <div className="my-auto space-y-4 max-w-lg mx-auto">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#FFD343] border-4 border-[#151C45] flex items-center justify-center shadow-[4px_4px_0px_#151C45] animate-bounce">
+                <Award className="w-10 h-10 text-[#FF8426]" />
               </div>
 
-              <div className="space-y-2">
-                <span className="px-4 py-1.5 bg-purple text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm">
-                  🏆 NHIỆM VỤ HOÀN THÀNH XUẤT SẮC
+              <div>
+                <span className="px-3 py-1 bg-[#7965F2] text-white border-2 border-[#151C45] rounded-full text-xs font-black font-heading">
+                  NHIỆM VỤ HOÀN THÀNH
                 </span>
-                <h1 className="text-3xl sm:text-5xl font-comic font-black text-navy tracking-wide">
+                <h2 className="text-2xl sm:text-4xl font-comic font-black text-[#151C45] mt-1">
                   BẠN ĐÃ CHÍNH THỨC LEVEL UP!
-                </h1>
-                <p className="text-sm sm:text-base font-heading font-bold text-orange max-w-lg mx-auto">
-                  "Hiểu bản thân – Làm chủ mục tiêu. Tự tin bước vào phòng thi và đạt kết quả cao nhất!"
+                </h2>
+                <p className="text-xs sm:text-sm text-[#FF8426] font-heading font-bold mt-1">
+                  "Hiểu bản thân – Làm chủ mục tiêu. Tự tin bước vào kỳ thi!"
                 </p>
               </div>
 
-              <div className="p-4 bg-cream border-2 border-navy rounded-2xl max-w-md mx-auto text-xs font-heading font-bold text-navy/80 space-y-1">
-                <p>✔ Hoàn thành 8 thử thách tư duy SWOT</p>
-                <p>✔ Mở khóa 5 chìa khóa SMART (S-M-A-R-T)</p>
-                <p>✔ Hoàn tất kế hoạch 5 ngày cho 9 chương kiến thức</p>
-                <p>✔ Đạt tổng điểm kinh nghiệm: <b>{xp} XP</b></p>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <div className="flex justify-center gap-3 pt-2">
                 <button
                   onClick={() => {
-                    setCurrentScene('TITLE');
-                    setXp(0);
-                    setCheckedChapters([1]);
+                    setCurrentScene('PROLOGUE');
+                    setScene1Idx(0);
+                    setCheckedChapters([]);
                   }}
-                  className="btn-comic px-6 py-3 bg-white hover:bg-cream-dark text-navy text-xs sm:text-sm flex items-center gap-2"
+                  className="px-5 py-2.5 bg-white border-2 border-[#151C45] rounded-xl font-heading font-black text-xs text-[#151C45] shadow-[2px_2px_0px_#151C45]"
                 >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>CHƠI LẠI TỪ ĐẦU</span>
+                  CHƠI LẠI TỪ ĐẦU 🔄
                 </button>
-
                 <button
                   onClick={() => setIsPresenterOpen(true)}
-                  className="btn-comic px-6 py-3 bg-purple hover:bg-purple-light text-white text-xs sm:text-sm flex items-center gap-2"
+                  className="px-5 py-2.5 bg-[#FFAA2B] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs text-[#151C45] shadow-[2px_2px_0px_#151C45]"
                 >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>XEM LẠI ĐÁP ÁN & FAQ [P]</span>
+                  PRESENTER MODE ⚙️
                 </button>
               </div>
             </div>
           </div>
         )}
 
-      </main>
+      </div>
 
-      {/* Presenter Mode Modal */}
-      <PresenterModal
-        isOpen={isPresenterOpen}
-        onClose={() => setIsPresenterOpen(false)}
-        onJumpToScene={handleJumpToScene}
-      />
+      {/* ================= PRESENTER CONTROL MODAL ================= */}
+      {isPresenterOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#151C45]/80 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl bg-[#FFFDF7] border-4 border-[#151C45] rounded-3xl shadow-[8px_8px_0px_#151C45] p-5 max-h-[85vh] flex flex-col justify-between">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b-2 border-[#151C45] pb-3">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#FF8426]" />
+                <h3 className="font-heading font-black text-base text-[#151C45]">
+                  PRESENTER CONTROL PANEL
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsPresenterOpen(false)}
+                className="p-1.5 bg-white hover:bg-[#F47E93] hover:text-white border-2 border-[#151C45] rounded-xl text-[#151C45]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Tabs */}
+            <div className="flex gap-2 pt-3 border-b border-[#151C45]/20">
+              <button
+                onClick={() => setPresenterTab('SCENES')}
+                className={`px-3 py-1.5 font-heading font-black text-xs rounded-t-xl border-t-2 border-x-2 border-[#151C45] ${
+                  presenterTab === 'SCENES' ? 'bg-[#FFF4DF] text-[#151C45]' : 'bg-white text-gray-500'
+                }`}
+              >
+                ĐIỀU HƯỚNG CẢNH
+              </button>
+              <button
+                onClick={() => setPresenterTab('ANSWERS')}
+                className={`px-3 py-1.5 font-heading font-black text-xs rounded-t-xl border-t-2 border-x-2 border-[#151C45] ${
+                  presenterTab === 'ANSWERS' ? 'bg-[#FFF4DF] text-[#151C45]' : 'bg-white text-gray-500'
+                }`}
+              >
+                ĐÁP ÁN 8 CÂU SWOT
+              </button>
+              <button
+                onClick={() => setPresenterTab('FAQ')}
+                className={`px-3 py-1.5 font-heading font-black text-xs rounded-t-xl border-t-2 border-x-2 border-[#151C45] ${
+                  presenterTab === 'FAQ' ? 'bg-[#FFF4DF] text-[#151C45]' : 'bg-white text-gray-500'
+                }`}
+              >
+                FAQ GIẢI THÍCH SMART
+              </button>
+            </div>
+
+            {/* Tab Body */}
+            <div className="py-4 overflow-y-auto flex-1">
+              {presenterTab === 'SCENES' && (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleJumpToScene('PROLOGUE')}
+                    className="p-2.5 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    1. Scene 1: Minh ở nhà (Còn 6 ngày nữa!)
+                  </button>
+                  <button
+                    onClick={() => handleJumpToScene('MEET_LINH')}
+                    className="p-2.5 bg-white hover:bg-[#FFD343] border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    2. Scene 2: Gặp Linh & Tick (Giới thiệu SWOT)
+                  </button>
+                  <button
+                    onClick={() => handleJumpToScene('SWOT_QUIZ', 0)}
+                    className="p-2.5 bg-white hover:bg-[#55C7AA] border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    3. Scene 3: Bắt đầu 8 câu SWOT (Câu 1)
+                  </button>
+                  <button
+                    onClick={() => handleJumpToScene('SMART_DISCUSSION')}
+                    className="p-2.5 bg-white hover:bg-[#FF8426] hover:text-white border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    4. Scene 4: Thảo luận 2 phút
+                  </button>
+                  <button
+                    onClick={() => handleJumpToScene('SMART_KEYS')}
+                    className="p-2.5 bg-white hover:bg-[#7965F2] hover:text-white border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    5. Scene 5: 5 Chìa khóa SMART & Lịch
+                  </button>
+                  <button
+                    onClick={() => handleJumpToScene('VICTORY')}
+                    className="p-2.5 bg-[#FFD343] border-2 border-[#151C45] rounded-xl text-left font-heading font-bold text-xs"
+                  >
+                    6. Scene 6: Chiến thắng (Victory)
+                  </button>
+                </div>
+              )}
+
+              {presenterTab === 'ANSWERS' && (
+                <div className="space-y-2">
+                  <div className="p-2.5 bg-[#FFD343] border-2 border-[#151C45] rounded-xl font-heading font-black text-xs text-[#151C45] flex items-center justify-between">
+                    <span>ĐÁP ÁN NHANH:</span>
+                    <span className="text-[#FF8426] tracking-widest text-sm">B - A - C - B - A - C - C - A</span>
+                  </div>
+                  {SWOT_QUESTIONS.map(q => (
+                    <div key={q.id} className="p-2 bg-white border border-[#151C45] rounded-lg text-xs font-heading">
+                      <span className="font-bold">{q.title}: </span>
+                      <span className="px-1.5 py-0.5 bg-[#55C7AA] text-[#151C45] font-black rounded">
+                        Đáp án {q.correctKey}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {presenterTab === 'FAQ' && (
+                <div className="space-y-2">
+                  {PRESENTER_FAQ.map((f, i) => (
+                    <div key={i} className="p-2.5 bg-white border border-[#151C45] rounded-xl text-xs font-heading">
+                      <p className="font-bold text-[#FF8426]">❓ {f.q}</p>
+                      <p className="font-sans text-[11px] text-[#151C45]/80 mt-1">💡 {f.a}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
