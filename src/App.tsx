@@ -26,7 +26,9 @@ import {
   ChevronRight,
   BookOpen,
   Check,
-  CheckSquare
+  CheckSquare,
+  Smartphone,
+  AlertTriangle
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -36,7 +38,7 @@ export const App: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [xp, setXp] = useState(0);
-  const [checkedChapters, setCheckedChapters] = useState<number[]>([1]); // default starts with 1
+  const [checkedChapters, setCheckedChapters] = useState<number[]>([1]);
   
   // Timer for 2-minute discussion
   const [timerSeconds, setTimerSeconds] = useState(120);
@@ -47,7 +49,7 @@ export const App: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
-  // Trigger confetti
+  // Confetti trigger
   const triggerConfetti = () => {
     confetti({
       particleCount: 80,
@@ -59,7 +61,6 @@ export const App: React.FC = () => {
   // Keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if inside an input or modal is open
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
       if (e.key === 'p' || e.key === 'P') {
@@ -67,7 +68,6 @@ export const App: React.FC = () => {
       } else if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
       } else if (e.key === ' ' && !isPresenterOpen) {
-        // Space to advance dialogue
         if (currentScene === 'PROLOGUE') {
           handleNextPrologue();
         } else if (currentScene === 'MEET_LINH') {
@@ -108,7 +108,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Scene navigation handlers
+  // Navigation handlers
   const handleStartGame = () => {
     setCurrentScene('PROLOGUE');
     setDialogueIndex(0);
@@ -186,19 +186,19 @@ export const App: React.FC = () => {
       />
 
       {/* Main Game Stage Area */}
-      <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col justify-between p-4 sm:p-6">
+      <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col justify-between p-3 sm:p-5">
         
         {/* ================= SCENE 0: TITLE ================= */}
         {currentScene === 'TITLE' && (
-          <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-between py-2 sm:py-6">
+          <div className="w-full h-full max-w-6xl mx-auto flex flex-col justify-between py-2 sm:py-4">
             {/* Top Tagline */}
-            <div className="flex items-center justify-between border-b-2 border-navy/20 pb-3">
+            <div className="flex items-center justify-between border-b-2 border-navy/20 pb-2">
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 bg-yellow border-2 border-navy rounded-full font-heading font-black text-xs text-navy shadow-comic-sm">
                   ★ PHIÊN BẢN TRÌNH CHIẾU LỚP HỌC 2.0
                 </span>
                 <span className="text-xs font-heading font-bold text-navy/70 hidden sm:inline">
-                  Western 2D Cartoon Style • SWOT & SMART Interactive VN
+                  Western 2D Cartoon Style • SWOT & SMART Interactive Visual Novel
                 </span>
               </div>
               <span className="text-xs font-heading font-bold text-navy/60">
@@ -247,15 +247,15 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Right Column: Master Concept Preview Card */}
+              {/* Right Column: Character Trio Showcase */}
               <div className="lg:col-span-6 flex justify-center">
                 <div className="card-comic p-3 bg-white w-full max-w-lg aspect-video overflow-hidden relative group">
                   <img 
                     src="/assets/brand/character_sheet.jpg" 
-                    alt="Master Concept Art"
+                    alt="Master Character Trio"
                     className="w-full h-full object-cover rounded-xl border-2 border-navy"
                   />
-                  <div className="absolute bottom-5 inset-x-5 p-2 bg-navy/90 text-white border-2 border-navy rounded-xl text-xs font-heading font-bold flex items-center justify-between">
+                  <div className="absolute bottom-4 inset-x-4 p-2 bg-navy/90 text-white border-2 border-navy rounded-xl text-xs font-heading font-bold flex items-center justify-between">
                     <span>Bộ ba: Minh (Mint) • Linh (Orange) • Tick (Purple)</span>
                     <span className="text-yellow font-comic text-[10px]">100% CARTOON</span>
                   </div>
@@ -264,7 +264,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Bottom Keyboard Guide */}
-            <div className="border-t-2 border-navy/20 pt-3 flex flex-wrap items-center justify-between text-xs font-heading font-bold text-navy/60">
+            <div className="border-t-2 border-navy/20 pt-2 flex flex-wrap items-center justify-between text-xs font-heading font-bold text-navy/60">
               <div className="flex items-center gap-4">
                 <span>[Space] / Click: Tiếp tục</span>
                 <span>[A, B, C, D]: Trắc nghiệm</span>
@@ -276,24 +276,56 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* ================= SCENE 1: PROLOGUE ================= */}
+        {/* ================= SCENE 1: PROLOGUE (MINH'S BEDROOM SCENE) ================= */}
         {currentScene === 'PROLOGUE' && (
           <div className="w-full h-full flex flex-col justify-between">
-            {/* Center Visual Mockup */}
-            <div className="my-auto flex flex-col items-center justify-center">
-              <div className="card-comic p-2 bg-white max-w-3xl w-full aspect-video overflow-hidden relative shadow-comic-lg">
+            {/* Visual Novel Stage: Minh at study desk */}
+            <div className="relative flex-1 w-full max-w-4xl mx-auto my-auto flex items-center justify-center">
+              <div className="card-comic relative w-full h-[320px] sm:h-[400px] overflow-hidden bg-white border-4 border-navy shadow-comic-lg flex items-center justify-center">
+                {/* Background Artwork: Minh at his study desk */}
                 <img 
-                  src="/assets/characters/key_visual.jpg" 
+                  src="/assets/characters/minh_scene_stage.png" 
                   alt="Minh tại bàn học"
-                  className="w-full h-full object-cover rounded-xl border-2 border-navy"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-coral text-white border-2 border-navy rounded-xl font-heading font-black text-xs shadow-comic-sm">
-                  ⚠️ EXAM: CÒN 6 NGÀY • 9 CHƯƠNG CHƯA ÔN
+
+                {/* Day / Night ambient transition */}
+                {dialogueIndex >= 5 && (
+                  <div className="absolute inset-0 bg-navy/60 backdrop-blur-[0.5px] transition-all duration-700 flex items-center justify-center">
+                    <div className="p-3 bg-navy text-yellow border-2 border-yellow rounded-2xl shadow-comic font-heading font-black text-sm flex items-center gap-2 animate-bounce-gentle">
+                      <Clock className="w-5 h-5 text-orange animate-spin" />
+                      <span>ĐÃ 23:30 ĐÊM! SÁCH VẪN CHƯA MỞ!</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Top Corner HUD badges */}
+                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                  <div className="px-3 py-1 bg-coral text-white border-2 border-navy rounded-xl font-heading font-black text-xs shadow-comic-sm flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <span>EXAM: CÒN 6 NGÀY NỮA!</span>
+                  </div>
+                  <div className="px-3 py-1 bg-yellow text-navy border-2 border-navy rounded-xl font-heading font-black text-xs shadow-comic-sm">
+                    📚 9 CHƯƠNG CHƯA ÔN
+                  </div>
                 </div>
+
+                {/* Smartphone distraction pop-up */}
+                {dialogueIndex === 4 && (
+                  <div className="absolute top-1/3 right-6 p-3 bg-white border-3 border-navy rounded-2xl shadow-comic max-w-xs animate-bounce-gentle">
+                    <div className="flex items-center gap-2 text-xs font-heading font-black text-purple">
+                      <Smartphone className="w-4 h-4 text-orange" />
+                      <span>THÔNG BÁO VIDEO MỚI!</span>
+                    </div>
+                    <p className="text-[11px] font-sans text-navy/80 mt-1">
+                      "Xem lướt 5 phút thôi mà..."
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Dialogue Box */}
+            {/* Visual Novel Dialogue Box with Minh's Avatar */}
             <VNDialogueBox
               speaker={PROLOGUE_DIALOGUES[dialogueIndex].speaker}
               name={PROLOGUE_DIALOGUES[dialogueIndex].name}
@@ -307,37 +339,68 @@ export const App: React.FC = () => {
         {/* ================= SCENE 2: MEET LINH & TICK ================= */}
         {currentScene === 'MEET_LINH' && (
           <div className="w-full h-full flex flex-col justify-between">
-            {/* Center Visual Stage with Linh & Tick Cards */}
-            <div className="my-auto grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto w-full items-center">
-              {/* Minh Card */}
-              <div className="card-comic p-3 bg-white text-center">
-                <div className="w-20 h-20 mx-auto rounded-full bg-mint/30 border-2 border-navy overflow-hidden p-1 mb-2">
-                  <img src="/assets/characters/minh_ref.png" alt="Minh" className="w-full h-full object-cover" />
+            {/* Stage: Linh, Tick and Minh in dialogue */}
+            <div className="relative flex-1 w-full max-w-4xl mx-auto my-auto flex items-center justify-center">
+              <div className="card-comic relative w-full h-[320px] sm:h-[400px] overflow-hidden bg-gradient-to-b from-cream to-white border-4 border-navy shadow-comic-lg flex items-end justify-around px-6 pb-2">
+                
+                {/* Left: Minh standing */}
+                <div className="flex flex-col items-center">
+                  <div className="h-60 sm:h-72 flex items-end">
+                    <img 
+                      src="/assets/characters/minh_standing.png" 
+                      alt="Minh" 
+                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
+                    />
+                  </div>
+                  <span className="px-3 py-0.5 bg-mint text-navy border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
+                    Minh
+                  </span>
                 </div>
-                <h4 className="font-heading font-black text-sm text-navy">MINH</h4>
-                <p className="text-[11px] text-navy/70">Người chơi / Sinh viên</p>
-              </div>
 
-              {/* Linh Card */}
-              <div className="card-comic p-3 bg-white text-center border-4 border-orange">
-                <div className="w-24 h-24 mx-auto rounded-full bg-orange/20 border-2 border-navy overflow-hidden p-1 mb-2">
-                  <img src="/assets/characters/linh_ref.png" alt="Linh" className="w-full h-full object-cover" />
+                {/* Center: Tick mascot */}
+                <div className="flex flex-col items-center animate-bounce-gentle">
+                  <div className="h-32 sm:h-40 flex items-end">
+                    <img 
+                      src="/assets/characters/tick_mascot.png" 
+                      alt="Tick" 
+                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
+                    />
+                  </div>
+                  <span className="px-3 py-0.5 bg-purple text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
+                    Tick
+                  </span>
                 </div>
-                <h4 className="font-heading font-black text-sm text-orange">LINH</h4>
-                <p className="text-[11px] text-navy/70">Bạn đồng hành & Cố vấn</p>
-              </div>
 
-              {/* Tick Card */}
-              <div className="card-comic p-3 bg-white text-center">
-                <div className="w-20 h-20 mx-auto rounded-full bg-purple/20 border-2 border-navy overflow-hidden p-1 mb-2">
-                  <img src="/assets/characters/tick_ref.png" alt="Tick" className="w-full h-full object-cover" />
+                {/* Right: Linh standing */}
+                <div className="flex flex-col items-center">
+                  <div className="h-60 sm:h-72 flex items-end">
+                    <img 
+                      src="/assets/characters/linh_standing.png" 
+                      alt="Linh" 
+                      className="max-h-full object-contain filter drop-shadow-[0_4px_8px_rgba(21,28,69,0.3)]"
+                    />
+                  </div>
+                  <span className="px-3 py-0.5 bg-orange text-white border-2 border-navy rounded-full font-heading font-black text-xs shadow-comic-sm -mt-2 z-10">
+                    Linh
+                  </span>
                 </div>
-                <h4 className="font-heading font-black text-sm text-purple">TICK</h4>
-                <p className="text-[11px] text-navy/70">Mascot Báo Thức</p>
+
+                {/* Floating SWOT quadrant preview */}
+                <div className="absolute top-4 inset-x-6 flex justify-between items-center pointer-events-none">
+                  <div className="px-3 py-1 bg-white border-2 border-navy rounded-xl text-xs font-heading font-black text-purple shadow-comic-sm">
+                    CHƯƠNG 01: MA TRẬN SWOT
+                  </div>
+                  <div className="flex gap-1.5">
+                    <span className="px-2 py-0.5 bg-mint border border-navy rounded font-black text-xs">S</span>
+                    <span className="px-2 py-0.5 bg-coral border border-navy rounded font-black text-xs text-white">W</span>
+                    <span className="px-2 py-0.5 bg-yellow border border-navy rounded font-black text-xs">O</span>
+                    <span className="px-2 py-0.5 bg-purple border border-navy rounded font-black text-xs text-white">T</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Dialogue Box */}
+            {/* Visual Novel Dialogue Box with Speaking Character Avatar */}
             <VNDialogueBox
               speaker={MEET_LINH_DIALOGUES[dialogueIndex].speaker}
               name={MEET_LINH_DIALOGUES[dialogueIndex].name}
@@ -416,7 +479,7 @@ export const App: React.FC = () => {
                 })}
               </div>
 
-              {/* Explanation Banner (when answered) */}
+              {/* Explanation Banner */}
               {isAnswerSubmitted && (
                 <div className={`p-4 rounded-2xl border-2 border-navy text-xs sm:text-sm font-heading font-bold animate-fadeIn ${
                   selectedAnswer === SWOT_QUESTIONS[currentQuestionIdx].correctKey 
@@ -572,34 +635,40 @@ export const App: React.FC = () => {
                 "Trong 2 phút, hãy giúp nhân vật xây dựng một kế hoạch để THỰC SỰ BẮT ĐẦU thay vì tiếp tục trì hoãn?"
               </h2>
 
-              {/* Timer Display Box */}
-              <div className="p-6 bg-cream border-3 border-navy rounded-3xl shadow-comic max-w-sm mx-auto flex flex-col items-center gap-3">
-                <div className="flex items-center gap-2 font-comic text-5xl sm:text-6xl text-navy">
-                  <Clock className={`w-10 h-10 ${isTimerRunning ? 'text-orange animate-spin' : 'text-purple'}`} />
-                  <span>
-                    {Math.floor(timerSeconds / 60).toString().padStart(2, '0')}:
-                    {(timerSeconds % 60).toString().padStart(2, '0')}
-                  </span>
+              {/* Timer Box with Tick Avatar */}
+              <div className="p-6 bg-cream border-3 border-navy rounded-3xl shadow-comic max-w-md mx-auto flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-20 h-20 rounded-2xl bg-white border-2 border-navy overflow-hidden p-1 shadow-comic-sm flex-shrink-0 animate-bounce-gentle">
+                  <img src="/assets/characters/tick_avatar.png" alt="Tick" className="w-full h-full object-cover" />
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setIsTimerRunning(prev => !prev)}
-                    className={`btn-comic px-5 py-2 text-xs text-white ${
-                      isTimerRunning ? 'bg-coral' : 'bg-mint text-navy'
-                    }`}
-                  >
-                    {isTimerRunning ? 'TẠM DỪNG' : 'BẮT ĐẦU ĐẾM NGƯỢC'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsTimerRunning(false);
-                      setTimerSeconds(120);
-                    }}
-                    className="p-2 bg-white border-2 border-navy rounded-xl shadow-comic-sm hover:bg-cream"
-                  >
-                    <RotateCcw className="w-4 h-4 text-navy" />
-                  </button>
+                <div className="flex-1 flex flex-col items-center sm:items-start gap-2">
+                  <div className="flex items-center gap-2 font-comic text-4xl sm:text-5xl text-navy">
+                    <Clock className={`w-8 h-8 ${isTimerRunning ? 'text-orange animate-spin' : 'text-purple'}`} />
+                    <span>
+                      {Math.floor(timerSeconds / 60).toString().padStart(2, '0')}:
+                      {(timerSeconds % 60).toString().padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsTimerRunning(prev => !prev)}
+                      className={`btn-comic px-4 py-1.5 text-xs text-white ${
+                        isTimerRunning ? 'bg-coral' : 'bg-mint text-navy'
+                      }`}
+                    >
+                      {isTimerRunning ? 'TẠM DỪNG' : 'BẮT ĐẦU'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsTimerRunning(false);
+                        setTimerSeconds(120);
+                      }}
+                      className="p-1.5 bg-white border-2 border-navy rounded-xl shadow-comic-sm hover:bg-cream"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-navy" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
