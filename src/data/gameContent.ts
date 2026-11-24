@@ -4,7 +4,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p1',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'sleepy',
     text: 'Chỉ còn 6 ngày nữa là thi rồi…',
     subtext: 'EXAM: 6 DAYS LEFT | CHAPTERS: 0/9',
@@ -14,7 +14,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p2',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'worried',
     text: 'Chín chương cần ôn mà mình vẫn chưa bắt đầu được chương nào cả.',
     background: 'bedroom'
@@ -22,7 +22,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p3',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'determined',
     text: 'Thôi, hôm nay nhất định phải ngồi vào bàn học nghiêm túc!',
     background: 'bedroom'
@@ -38,17 +38,17 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p5',
     speaker: 'glitch',
-    name: 'Glitch',
+    name: 'Tick',
     expression: 'sneaky',
-    text: 'Khoan đã Alex ơi! Kênh yêu thích vừa ra video mới kìa!',
-    subtext: 'Hiện thân của sự trì hoãn',
+    text: 'Khoan đã Minh ơi! Kênh yêu thích vừa ra video mới kìa!',
+    subtext: 'Cám dỗ của sự trì hoãn',
     background: 'bedroom',
     soundCue: 'glitch'
   },
   {
     id: 'p6',
     speaker: 'glitch',
-    name: 'Glitch',
+    name: 'Tick',
     expression: 'laugh',
     text: 'Xem thêm 5 phút nữa thôi mà, rồi học cũng có muộn gì đâu!',
     background: 'bedroom'
@@ -56,7 +56,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p7',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'confused',
     text: 'Ừm… chắc 5 phút cũng không sao đâu nhỉ?',
     background: 'bedroom'
@@ -72,7 +72,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p9',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'worried',
     text: 'Khoan… sao đã hết cả buổi tối rồi?! Mình vẫn chưa đọc được trang nào!',
     background: 'bedroom'
@@ -80,7 +80,7 @@ export const PROLOGUE_DIALOGUES: DialogueLine[] = [
   {
     id: 'p10',
     speaker: 'glitch',
-    name: 'Glitch',
+    name: 'Tick',
     expression: 'sneaky',
     text: 'Không sao đâu! Ngày mai bắt đầu vẫn kịp chán mà, đi ngủ thôi!',
     background: 'bedroom'
@@ -99,25 +99,25 @@ export const MEET_NOVA_DIALOGUES: DialogueLine[] = [
   {
     id: 'mn1',
     speaker: 'nova',
-    name: 'Nova',
+    name: 'Linh',
     expression: 'smile',
-    text: 'Chào mừng Alex đến với thế giới LEVEL UP!',
-    subtext: 'The Strategist – Người hướng dẫn chiến lược',
+    text: 'Chào mừng Minh đến với thế giới LEVEL UP!',
+    subtext: 'The Mentor – Người bạn đồng hành & Cố vấn chiến lược',
     background: 'swot_room',
     soundCue: 'swot'
   },
   {
     id: 'mn2',
     speaker: 'nova',
-    name: 'Nova',
+    name: 'Linh',
     expression: 'confident',
-    text: 'Tôi là Nova, cố vấn chiến lược đồng hành cùng cậu trên hành trình này.',
+    text: 'Tôi là Linh, người sẽ đồng hành cùng cậu tìm ra chiến lược bứt phá kỳ thi này!',
     background: 'swot_room'
   },
   {
     id: 'mn3',
     speaker: 'alex',
-    name: 'Alex',
+    name: 'Minh',
     expression: 'confused',
     text: 'Chiến lược ư? Nhưng tôi chỉ đang lo sốt vó cho kỳ thi đại học 6 ngày nữa thôi mà!',
     background: 'swot_room'
@@ -125,7 +125,7 @@ export const MEET_NOVA_DIALOGUES: DialogueLine[] = [
   {
     id: 'mn4',
     speaker: 'nova',
-    name: 'Nova',
+    name: 'Linh',
     expression: 'explain',
     text: 'Trước khi xây dựng bất kỳ kế hoạch nào, cậu phải hiểu rõ bản thân mình đang đứng ở đâu.',
     background: 'swot_room'
@@ -133,7 +133,7 @@ export const MEET_NOVA_DIALOGUES: DialogueLine[] = [
   {
     id: 'mn5',
     speaker: 'nova',
-    name: 'Nova',
+    name: 'Linh',
     expression: 'thinking',
     text: 'Cậu có những điểm mạnh nào? Điều gì đang cản trở cậu? Xung quanh có cơ hội nào có thể tận dụng?',
     background: 'swot_room'
@@ -141,7 +141,7 @@ export const MEET_NOVA_DIALOGUES: DialogueLine[] = [
   {
     id: 'mn6',
     speaker: 'nova',
-    name: 'Nova',
+    name: 'Linh',
     expression: 'confident',
     text: 'Và đó chính là lý do ma trận SWOT xuất hiện. Hãy cùng nhau giải mã 8 thử thách trí tuệ ngay bây giờ!',
     background: 'swot_room'

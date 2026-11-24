@@ -153,7 +153,7 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
                   <span className="w-2 h-2 rounded-full bg-mint animate-pulse" />
                   LEVEL UP! OFFICIAL BANNER
                 </span>
-                <p className="text-[10px] text-cream/70">Alex • Nova • Iris • Glitch (Click để xem chi tiết)</p>
+                <p className="text-[10px] text-cream/70">Minh • Linh • Tick (Click để xem chi tiết)</p>
               </div>
               <span className="text-[11px] font-mono text-amber font-bold bg-midnight/80 px-2.5 py-1 rounded border border-amber/30">16:9 HD</span>
             </div>
@@ -187,7 +187,7 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
             <div className="mt-4 space-y-4 text-xs sm:text-sm text-cream/85 leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
               <div className="p-3 rounded-xl bg-violet/15 border border-violet/30">
                 <h4 className="font-bold text-violet-light mb-1">1. Định dạng trình chiếu lớp học:</h4>
-                <p>Người thuyết trình điều khiển game trên máy chiếu / màn hình lớn. Khán giả cả lớp cùng theo dõi câu chuyện, thảo luận và lựa chọn phương án cho nhân vật Alex.</p>
+                <p>Người thuyết trình điều khiển game trên máy chiếu / màn hình lớn. Khán giả cả lớp cùng theo dõi câu chuyện, thảo luận và lựa chọn phương án cho nhân vật Minh.</p>
               </div>
 
               <div className="p-3 rounded-xl bg-violet/15 border border-violet/30">
@@ -197,7 +197,7 @@ export const TitleScene: React.FC<TitleSceneProps> = ({
 
               <div className="p-3 rounded-xl bg-mint/15 border border-mint/30">
                 <h4 className="font-bold text-mint mb-1">3. Chương 02 – SMART (Làm chủ mục tiêu):</h4>
-                <p>Xem video tình huống về vòng lặp trì hoãn, tham gia thử thách 2 phút cứu vãn kỳ thi, mở khóa 5 chìa khóa SMART (Specific, Measurable, Achievable, Relevant, Time-bound), xây dựng kế hoạch 5 ngày và đánh bại quái vật Glitch!</p>
+                <p>Xem video tình huống về vòng lặp trì hoãn, tham gia thử thách 2 phút cứu vãn kỳ thi cùng mascot Tick, mở khóa 5 chìa khóa SMART (Specific, Measurable, Achievable, Relevant, Time-bound), xây dựng kế hoạch 5 ngày và hoàn thành 9 chương trước 22:00!</p>
               </div>
 
               <div className="p-3 rounded-xl bg-midnight-light/90 border border-violet/30">

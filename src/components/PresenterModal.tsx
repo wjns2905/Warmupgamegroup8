@@ -125,7 +125,7 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
                   className="p-3 text-left rounded-lg bg-midnight-light/80 hover:bg-violet/30 border border-violet/30 hover:border-amber transition-all text-xs font-semibold"
                 >
                   <span className="text-amber block font-mono text-[10px]">SCENE 02</span>
-                  Prologue: 5 Phút Nữa (Alex & Glitch)
+                  Prologue: 5 Phút Nữa (Minh & Trì Hoãn)
                 </button>
 
                 <button
@@ -133,7 +133,7 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
                   className="p-3 text-left rounded-lg bg-midnight-light/80 hover:bg-violet/30 border border-violet/30 hover:border-amber transition-all text-xs font-semibold"
                 >
                   <span className="text-amber block font-mono text-[10px]">SCENE 03</span>
-                  Gặp Nova & Giới Thiệu SWOT
+                  Gặp Linh & Giới Thiệu SWOT
                 </button>
               </div>
 
@@ -211,7 +211,7 @@ export const PresenterModal: React.FC<PresenterModalProps> = ({
                     onClick={() => onJumpToScene('DEFEAT_GLITCH')}
                     className="p-2 text-left rounded bg-midnight/80 hover:bg-coral/30 border border-coral/40 text-xs text-coral font-bold"
                   >
-                    8. Đánh Bại Glitch
+                    8. Vượt Qua Trì Hoãn Cùng Tick
                   </button>
                   <button
                     onClick={() => onJumpToScene('VICTORY')}
